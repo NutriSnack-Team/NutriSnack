@@ -1,0 +1,104 @@
+import { Link } from 'react-router-dom';
+
+interface ProductCardProps {
+  id: number;
+  name: string;
+  brand: string;
+  category: string;
+  image: string;
+  nutrition: any;
+  score?: number;
+  grade?: string;
+  mockScore?: number;
+  mockGrade?: string;
+}
+
+export function ProductCard(props: ProductCardProps) {
+  const { id, name, brand, category, image, nutrition, score, grade, mockScore, mockGrade } = props;
+
+  // Use dynamic scores if available, otherwise mock scores, otherwise default
+  const displayScore = score ?? mockScore ?? 50;
+  const displayGrade = grade ?? mockGrade ?? 'C';
+
+  // Category Color Map (Subdued, professional colors)
+  const getCategoryColor = (cat: string) => {
+    switch (cat) {
+      case 'Chips': return 'bg-gray-100 text-gray-700';
+      case 'Drinks': return 'bg-gray-100 text-gray-700';
+      case 'Chocolates': return 'bg-gray-100 text-gray-700';
+      case 'Biscuits': return 'bg-gray-100 text-gray-700';
+      default: return 'bg-gray-100 text-gray-600';
+    }
+  };
+
+  // Grade Colors (Professional indicators)
+  const getGradeColor = (g: string) => {
+    if (g.startsWith('A') || g.startsWith('B')) return 'bg-emerald-600 text-white';
+    if (g === 'C' || g === 'C+') return 'bg-amber-500 text-white';
+    if (g === 'C-') return 'bg-amber-600 text-white';
+    if (g === 'D+') return 'bg-orange-600 text-white';
+    return 'bg-red-700 text-white';
+  };
+
+  return (
+    <Link to={`/product/${id}`} className="group flex flex-col bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden h-full">
+
+      {/* Product Image */}
+      <div className="w-full h-56 overflow-hidden bg-white border-b border-gray-100 flex items-center justify-center p-4">
+        <img src={`/${image}`} alt={name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 mix-blend-multiply" />
+      </div>
+
+      <div className="px-5 pb-5 pt-4">
+        {/* Title & Brand */}
+        <div className="mb-4 flex flex-col min-h-[60px]">
+          <h3 className="font-semibold text-[14px] text-gray-900 leading-snug mb-1 group-hover:text-emerald-700 transition-colors line-clamp-2 pr-4">
+            {name}
+          </h3>
+          <p className="text-[12px] text-gray-500 mb-2">{brand}</p>
+          <div className="mt-auto">
+            <span className={`inline-block px-2 py-0.5 ${getCategoryColor(category)} text-[10px] font-semibold rounded border border-gray-200`}>
+              {category}
+            </span>
+          </div>
+        </div>
+
+        {/* NutriGuard Score */}
+        <div className="flex items-end justify-between mb-4 pb-4 border-b border-gray-100">
+          <div>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">NutriGuard     Score</p>
+            <div className="flex items-baseline">
+              <span className="text-2xl font-bold text-gray-900 leading-none tracking-tight">{displayScore}</span>
+              <span className="text-xs font-medium text-gray-500 ml-1">/ 100</span>
+            </div>
+          </div>
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-[15px] font-bold shadow-sm ${getGradeColor(displayGrade)}`}>
+            {displayGrade}
+          </div>
+        </div>
+
+        {/* Nutrition Row */}
+        <div className="grid grid-cols-4 gap-1">
+          <div className="text-center">
+            <p className="text-[12px] font-semibold text-gray-900 leading-none mb-1.5">{nutrition.calories}</p>
+            <p className="text-[9px] font-medium text-gray-500 uppercase">kcal</p>
+          </div>
+          <div className="text-center border-l border-gray-100">
+            <p className="text-[12px] font-semibold text-gray-900 leading-none mb-1.5">{nutrition.sugar}g</p>
+            <p className="text-[9px] font-medium text-gray-500 uppercase">Sugar</p>
+          </div>
+          <div className="text-center border-l border-gray-100">
+            <p className="text-[12px] font-semibold text-gray-900 leading-none mb-1.5">{nutrition.sodium}mg</p>
+            <p className="text-[9px] font-medium text-gray-500 uppercase">Sodium</p>
+          </div>
+          <div className="text-center border-l border-gray-100">
+            <p className="text-[12px] font-semibold text-gray-900 leading-none mb-1.5">{nutrition.saturatedFat}g</p>
+            <p className="text-[9px] font-medium text-gray-500 uppercase">Sat. Fat</p>
+          </div>
+        </div>
+      </div>
+
+
+
+    </Link>
+  );
+}

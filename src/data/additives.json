@@ -1,0 +1,14 @@
+{
+  "INS 322": {
+    "name": "Lecithin",
+    "type": "Emulsifier",
+    "description": "Natural emulsifier typically from soy or sunflower",
+    "risk": "Low"
+  },
+  "INS 500": {
+    "name": "Sodium Carbonate",
+    "type": "Acidity Regulator",
+    "description": "Used as a raising agent",
+    "risk": "Low"
+  }
+}

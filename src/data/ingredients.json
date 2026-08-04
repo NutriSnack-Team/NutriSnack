@@ -1,0 +1,1322 @@
+{
+  "Refined Wheat Flour": {
+    "type": "Grain",
+    "concerns": "Refined grain, stripped of most fiber and nutrients",
+    "risk": "Moderate"
+  },
+  "Refined Palm Oil": {
+    "type": "Fat",
+    "concerns": "High in saturated fat",
+    "risk": "High"
+  },
+  "Sugar": {
+    "type": "Sweetener",
+    "concerns": "High consumption can lead to obesity and tooth decay",
+    "risk": "High"
+  },
+  "Invert Sugar Syrup": {
+    "type": "Sweetener",
+    "concerns": "High consumption can lead to obesity and tooth decay",
+    "risk": "High"
+  },
+  "Cashew": {
+    "type": "Nut",
+    "concerns": "Common allergen",
+    "benefits": "Healthy fats, protein, and fiber",
+    "risk": "Low"
+  },
+  "Milk Products": {
+    "type": "Dairy",
+    "benefits": "Provides calcium and protein",
+    "risk": "Low"
+  },
+  "Milk Solids": {
+    "type": "Dairy",
+    "benefits": "Provides calcium and protein",
+    "risk": "Low"
+  },
+  "Butter": {
+    "type": "Fat",
+    "concerns": "High in saturated fat",
+    "benefits": "Natural dairy fat",
+    "risk": "Moderate"
+  },
+  "Raising Agents (503ii,500ii)": {
+    "type": "Raising Agent",
+    "risk": "Low"
+  },
+  "Emulsifiers (322,471,472e)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed, usually soy-derived (lecithin); Heavily processed",
+    "risk": "Moderate"
+  },
+  "Artificial Vanilla & Milk Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Maida": {
+    "type": "Grain",
+    "concerns": "Refined grain, stripped of most fiber and nutrients",
+    "risk": "Moderate"
+  },
+  "Iodized Salt": {
+    "type": "Seasoning",
+    "concerns": "High sodium if consumed in large quantities",
+    "benefits": "Iodized salt supports thyroid health",
+    "risk": "Moderate"
+  },
+  "Artificial Butter Milk & Vanilla Flavour": {
+    "type": "Fat",
+    "concerns": "High in saturated fat",
+    "benefits": "Natural dairy fat",
+    "risk": "Moderate"
+  },
+  "Emulsifiers (472e,322)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed; Heavily processed, usually soy-derived (lecithin)",
+    "risk": "Moderate"
+  },
+  "Dark Chocolate Chips": {
+    "type": "Flavoring",
+    "concerns": "Often paired with added sugar and fat",
+    "benefits": "Contains cocoa antioxidants",
+    "risk": "Moderate"
+  },
+  "Hydrogenated Vegetable Oil": {
+    "type": "Fat",
+    "concerns": "May contain trans fats",
+    "risk": "High"
+  },
+  "Cocoa Solids": {
+    "type": "Flavoring",
+    "benefits": "Rich in antioxidants",
+    "risk": "Low"
+  },
+  "Cocoa Powder": {
+    "type": "Flavoring",
+    "benefits": "Rich in antioxidants",
+    "risk": "Low"
+  },
+  "Colour (150d)": {
+    "type": "Coloring",
+    "concerns": "Caramel colour, may contain controversial byproducts",
+    "risk": "Moderate"
+  },
+  "Vanilla Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Pistachio": {
+    "type": "Nut",
+    "concerns": "Common allergen",
+    "benefits": "Healthy fats, protein, and fiber",
+    "risk": "Low"
+  },
+  "Colour (102)": {
+    "type": "Coloring",
+    "concerns": "Synthetic dye (Tartrazine), linked to hyperactivity in sensitive children",
+    "risk": "High"
+  },
+  "Artificial Vanilla Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Edible Vegetable Oil": {
+    "type": "Fat",
+    "concerns": "Often high in saturated/processed fat",
+    "risk": "Moderate"
+  },
+  "Invert Syrup": {
+    "type": "Sweetener",
+    "concerns": "Added sugar",
+    "risk": "Moderate"
+  },
+  "Iodised Salt": {
+    "type": "Seasoning",
+    "concerns": "High sodium if consumed in large quantities",
+    "benefits": "Iodized salt supports thyroid health",
+    "risk": "Moderate"
+  },
+  "Dough Conditioner (223)": {
+    "type": "Dough Conditioner",
+    "concerns": "Sulphite-based, allergen for sulphite-sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Emulsifier (472e)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed",
+    "risk": "Moderate"
+  },
+  "Nature Identical & Artificial Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Whole Wheat Flour": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Wheat Bran": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Maltodextrin": {
+    "type": "Sweetener",
+    "concerns": "High glycemic index despite not tasting sweet",
+    "risk": "Moderate"
+  },
+  "Raising Agents (500ii,503ii)": {
+    "type": "Raising Agent",
+    "risk": "Low"
+  },
+  "Malt Extract": {
+    "type": "Sweetener",
+    "concerns": "Adds sugar and flavour",
+    "risk": "Moderate"
+  },
+  "Nature Identical Vanilla Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Emulsifiers (322,471)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed, usually soy-derived (lecithin); Heavily processed",
+    "risk": "Moderate"
+  },
+  "Ragi Flour": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Corn Flakes": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Rolled Oats": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Jowar Flour": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Rice Flour": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Quinoa Flour": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Honey": {
+    "type": "Sweetener",
+    "concerns": "Still a form of added sugar despite natural origin",
+    "risk": "Moderate"
+  },
+  "Choco Chips": {
+    "type": "Flavoring",
+    "concerns": "Often paired with added sugar and fat",
+    "benefits": "Contains cocoa antioxidants",
+    "risk": "Moderate"
+  },
+  "Dextrose": {
+    "type": "Sweetener",
+    "concerns": "High glycemic index, spikes blood sugar",
+    "risk": "Moderate"
+  },
+  "Colours (150c,124,133)": {
+    "type": "Coloring",
+    "concerns": "Caramel colour, may contain controversial byproducts; Synthetic dye (Ponceau 4R), linked to hyperactivity in sensitive children; Synthetic dye (Brilliant Blue)",
+    "risk": "High"
+  },
+  "Millet Flours": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Palm Oil": {
+    "type": "Fat",
+    "concerns": "High in saturated fat",
+    "risk": "High"
+  },
+  "Orange Powder": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Preservative (202)": {
+    "type": "Preservative",
+    "concerns": "Potassium sorbate, generally recognized as safe but heavily processed",
+    "risk": "Moderate"
+  },
+  "Chocolate Chips": {
+    "type": "Flavoring",
+    "concerns": "Often paired with added sugar and fat",
+    "benefits": "Contains cocoa antioxidants",
+    "risk": "Moderate"
+  },
+  "Leavening Agents": {
+    "type": "Raising Agent",
+    "risk": "Moderate"
+  },
+  "Emulsifiers": {
+    "type": "Emulsifier",
+    "risk": "Moderate"
+  },
+  "Wheat Flour": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Potato Flakes": {
+    "type": "Vegetable",
+    "benefits": "Provides carbohydrates and some potassium",
+    "risk": "Low"
+  },
+  "Spices": {
+    "type": "Seasoning",
+    "benefits": "Adds flavor, some spices have antioxidant properties",
+    "risk": "Low"
+  },
+  "Salt": {
+    "type": "Seasoning",
+    "concerns": "High sodium if consumed in large quantities",
+    "benefits": "Iodized salt supports thyroid health",
+    "risk": "Moderate"
+  },
+  "Flavour Enhancers": {
+    "type": "Flavor Enhancer",
+    "risk": "Moderate"
+  },
+  "Edible Starch": {
+    "type": "Carbohydrate",
+    "concerns": "Refined carbohydrate, low nutrient density",
+    "risk": "Moderate"
+  },
+  "Milk Chocolate": {
+    "type": "Flavoring",
+    "concerns": "Often paired with added sugar and fat",
+    "benefits": "Contains cocoa antioxidants",
+    "risk": "Moderate"
+  },
+  "Emulsifier (322)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed, usually soy-derived (lecithin)",
+    "risk": "Low"
+  },
+  "Humectant (1520)": {
+    "type": "Humectant",
+    "concerns": "Propylene glycol, heavily processed",
+    "risk": "Moderate"
+  },
+  "Fruit Jam": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Acidity Regulators (330,331iii)": {
+    "type": "Acidity Regulator",
+    "benefits": "Naturally occurring citric acid",
+    "risk": "Low"
+  },
+  "Colour (122)": {
+    "type": "Coloring",
+    "concerns": "Synthetic dye (Carmoisine)",
+    "risk": "Moderate"
+  },
+  "Artificial Flavouring Substances": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Fractionated Fat": {
+    "type": "Fat",
+    "concerns": "Highly processed fat",
+    "risk": "Moderate"
+  },
+  "Palmolein": {
+    "type": "Fat",
+    "concerns": "High in saturated fat",
+    "risk": "High"
+  },
+  "Invert Sugar": {
+    "type": "Sweetener",
+    "concerns": "High consumption can lead to obesity and tooth decay",
+    "risk": "High"
+  },
+  "Emulsifiers (322,476)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed, usually soy-derived (lecithin); Heavily processed",
+    "risk": "Moderate"
+  },
+  "Starch": {
+    "type": "Carbohydrate",
+    "concerns": "Refined carbohydrate, low nutrient density",
+    "risk": "Moderate"
+  },
+  "Interesterified Vegetable Fat": {
+    "type": "Fat",
+    "concerns": "Highly processed fat, similar concerns to trans fats",
+    "risk": "High"
+  },
+  "Coconut Oil": {
+    "type": "Fat",
+    "concerns": "High in saturated fat",
+    "risk": "Moderate"
+  },
+  "Nature Identical Orange Flavour": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Raising Agent (500ii)": {
+    "type": "Raising Agent",
+    "risk": "Low"
+  },
+  "Colours (110,124)": {
+    "type": "Coloring",
+    "concerns": "Synthetic dye (Sunset Yellow), linked to hyperactivity in sensitive children; Synthetic dye (Ponceau 4R), linked to hyperactivity in sensitive children",
+    "risk": "High"
+  },
+  "Liquid Glucose": {
+    "type": "Sweetener",
+    "concerns": "High glycemic index, spikes blood sugar",
+    "risk": "Moderate"
+  },
+  "Hydrogenated Vegetable Fat": {
+    "type": "Fat",
+    "concerns": "May contain trans fats",
+    "risk": "High"
+  },
+  "Flavouring Substances": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Cocoa Butter": {
+    "type": "Fat",
+    "benefits": "Source of healthy fats and antioxidants",
+    "risk": "Low"
+  },
+  "Emulsifiers (442,476)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed",
+    "risk": "Moderate"
+  },
+  "Natural and Nature Identical Flavouring Substances": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Fractionated Vegetable Fat": {
+    "type": "Fat",
+    "concerns": "Often high in saturated/processed fat",
+    "risk": "Moderate"
+  },
+  "Yeast": {
+    "type": "Leavening",
+    "benefits": "Natural fermentation agent",
+    "risk": "Low"
+  },
+  "Milk Solids (35%)": {
+    "type": "Dairy",
+    "benefits": "Provides calcium and protein",
+    "risk": "Low"
+  },
+  "Nature Identical Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Artificial Flavouring Substances (Cocoa,Vanilla)": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Maltitol": {
+    "type": "Sweetener",
+    "concerns": "Sugar alcohol, can cause digestive discomfort in excess",
+    "risk": "Moderate"
+  },
+  "Dried Sweetened Cranberries": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Almonds": {
+    "type": "Nut",
+    "concerns": "Common allergen",
+    "benefits": "Healthy fats, protein, and fiber",
+    "risk": "Low"
+  },
+  "Flour Treatment Agent (516)": {
+    "type": "Flour Treatment Agent",
+    "risk": "Low"
+  },
+  "Vegetable Fat": {
+    "type": "Fat",
+    "concerns": "Often high in saturated/processed fat",
+    "risk": "Moderate"
+  },
+  "Emulsifiers (442,322,476)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed; Heavily processed, usually soy-derived (lecithin)",
+    "risk": "Moderate"
+  },
+  "Improver (1101i)": {
+    "type": "Improver",
+    "concerns": "Enzyme-based dough improver",
+    "risk": "Low"
+  },
+  "Potato": {
+    "type": "Vegetable",
+    "benefits": "Provides carbohydrates and some potassium",
+    "risk": "Low"
+  },
+  "Refined Palmolein Oil": {
+    "type": "Fat",
+    "concerns": "High in saturated fat",
+    "risk": "High"
+  },
+  "Seasoning": {
+    "type": "Seasoning",
+    "benefits": "Adds flavor, some spices have antioxidant properties",
+    "risk": "Low"
+  },
+  "Flavour Enhancers (627,631)": {
+    "type": "Flavor Enhancer",
+    "concerns": "May trigger sensitivity in MSG-sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Acidity Regulator (330)": {
+    "type": "Acidity Regulator",
+    "benefits": "Naturally occurring citric acid",
+    "risk": "Low"
+  },
+  "Rice Meal": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Corn Meal": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Spices and Condiments": {
+    "type": "Seasoning",
+    "benefits": "Adds flavor, some spices have antioxidant properties",
+    "risk": "Low"
+  },
+  "Natural Tomato Flavour": {
+    "type": "Vegetable",
+    "benefits": "Source of vitamin C and lycopene",
+    "risk": "Low"
+  },
+  "Acidity Regulators (330,296,334)": {
+    "type": "Acidity Regulator",
+    "benefits": "Naturally occurring citric acid",
+    "risk": "Low"
+  },
+  "Colour (160c)": {
+    "type": "Coloring",
+    "concerns": "Natural paprika extract",
+    "risk": "Low"
+  },
+  "Gram Meal": {
+    "type": "Seed",
+    "benefits": "Source of fiber and healthy fats",
+    "risk": "Low"
+  },
+  "Potato (83%)": {
+    "type": "Vegetable",
+    "benefits": "Provides carbohydrates and some potassium",
+    "risk": "Low"
+  },
+  "Natural & Nature Identical Flavouring Substances": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Cheese Powder": {
+    "type": "Dairy",
+    "concerns": "Can be high in sodium and saturated fat",
+    "benefits": "Good source of calcium and protein",
+    "risk": "Low"
+  },
+  "Hydrolysed Vegetable Protein": {
+    "type": "Flavor Enhancer",
+    "concerns": "Contains free glutamates, similar to MSG",
+    "risk": "Moderate"
+  },
+  "Acidity Regulators (330,296)": {
+    "type": "Acidity Regulator",
+    "benefits": "Naturally occurring citric acid",
+    "risk": "Low"
+  },
+  "Lime Juice Powder": {
+    "type": "Fruit",
+    "benefits": "Provides vitamin C",
+    "risk": "Low"
+  },
+  "Potato (88%)": {
+    "type": "Vegetable",
+    "benefits": "Provides carbohydrates and some potassium",
+    "risk": "Low"
+  },
+  "Potato (80%)": {
+    "type": "Vegetable",
+    "benefits": "Provides carbohydrates and some potassium",
+    "risk": "Low"
+  },
+  "Black Salt": {
+    "type": "Seasoning",
+    "concerns": "High sodium if consumed in large quantities",
+    "benefits": "Iodized salt supports thyroid health",
+    "risk": "Moderate"
+  },
+  "Tomato Powder": {
+    "type": "Vegetable",
+    "benefits": "Source of vitamin C and lycopene",
+    "risk": "Low"
+  },
+  "Antioxidant (319)": {
+    "type": "Antioxidant",
+    "concerns": "Synthetic antioxidant (TBHQ), some studies flag high-dose concerns",
+    "risk": "Moderate"
+  },
+  "Wheat Fibre": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Corn Flour": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Rice Bran Oil": {
+    "type": "Fat",
+    "benefits": "Contains antioxidants, lower saturated fat than palm oil",
+    "risk": "Low"
+  },
+  "Stabilizer (415)": {
+    "type": "Stabilizer",
+    "risk": "Low"
+  },
+  "Spinach Powder": {
+    "type": "Vegetable",
+    "benefits": "Source of iron and vitamins",
+    "risk": "Low"
+  },
+  "Carbonated Water": {
+    "type": "Solvent",
+    "risk": "Low"
+  },
+  "Acidity Regulator (338)": {
+    "type": "Acidity Regulator",
+    "concerns": "Phosphoric acid, high intake linked to bone health concerns",
+    "risk": "Moderate"
+  },
+  "Caffeine": {
+    "type": "Stimulant",
+    "concerns": "Can cause jitteriness, sleep disruption in excess",
+    "risk": "Moderate"
+  },
+  "Natural Flavouring Substances": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Acidity Regulators (338,331iii)": {
+    "type": "Acidity Regulator",
+    "concerns": "Phosphoric acid, high intake linked to bone health concerns",
+    "risk": "Moderate"
+  },
+  "Sweeteners (951,950)": {
+    "type": "Sweetener",
+    "concerns": "Artificial sweetener (Aspartame), contains phenylalanine; Artificial sweetener (Acesulfame potassium)",
+    "risk": "Moderate"
+  },
+  "Preservative (211)": {
+    "type": "Preservative",
+    "concerns": "Sodium benzoate, can form benzene with vitamin C in some conditions",
+    "risk": "Moderate"
+  },
+  "Natural Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Stabilizer (436)": {
+    "type": "Stabilizer",
+    "risk": "Low"
+  },
+  "Sweeteners (955,950)": {
+    "type": "Sweetener",
+    "concerns": "Artificial sweetener (Sucralose); Artificial sweetener (Acesulfame potassium)",
+    "risk": "Moderate"
+  },
+  "Stabilizer (385)": {
+    "type": "Stabilizer",
+    "risk": "Low"
+  },
+  "Natural, Nature Identical & Artificial Flavours": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Acidity Regulators (330,331)": {
+    "type": "Acidity Regulator",
+    "benefits": "Naturally occurring citric acid",
+    "risk": "Low"
+  },
+  "Natural & Artificial Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Stabilizer (444)": {
+    "type": "Stabilizer",
+    "risk": "Moderate"
+  },
+  "Colour (110)": {
+    "type": "Coloring",
+    "concerns": "Synthetic dye (Sunset Yellow), linked to hyperactivity in sensitive children",
+    "risk": "High"
+  },
+  "Water": {
+    "type": "Solvent",
+    "risk": "Low"
+  },
+  "Mango Pulp (11.2%)": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Stabilizer (466)": {
+    "type": "Stabilizer",
+    "risk": "Low"
+  },
+  "Nature Identical Mango Flavour": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Antioxidant (300)": {
+    "type": "Antioxidant",
+    "benefits": "Vitamin C",
+    "risk": "Low"
+  },
+  "Food Colour (110)": {
+    "type": "Coloring",
+    "concerns": "Synthetic dye (Sunset Yellow), linked to hyperactivity in sensitive children",
+    "risk": "High"
+  },
+  "Mango Pulp (10.7%)": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Permitted Food Colour (110)": {
+    "type": "Coloring",
+    "concerns": "Synthetic dye (Sunset Yellow), linked to hyperactivity in sensitive children",
+    "risk": "High"
+  },
+  "Nature Identical & Artificial Mango Flavour": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Concentrated Mango Pulp": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Alphonso Mango Pulp (14%)": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Stabilizers (466,440)": {
+    "type": "Stabilizer",
+    "benefits": "Natural fruit-derived thickener (pectin)",
+    "risk": "Low"
+  },
+  "Natural & Nature Identical Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Mango Pulp (40%)": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Nature Identical & Natural Flavours": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Citric Acid": {
+    "type": "Acid/Fiber",
+    "benefits": "Naturally occurring acid or fruit fiber",
+    "risk": "Low"
+  },
+  "Pectin": {
+    "type": "Acid/Fiber",
+    "benefits": "Naturally occurring acid or fruit fiber",
+    "risk": "Low"
+  },
+  "Ascorbic Acid": {
+    "type": "Acid/Fiber",
+    "benefits": "Naturally occurring acid or fruit fiber",
+    "risk": "Low"
+  },
+  "Cardamom Powder": {
+    "type": "Seasoning",
+    "benefits": "Adds flavor, some spices have antioxidant properties",
+    "risk": "Low"
+  },
+  "Saffron Powder": {
+    "type": "Seasoning",
+    "benefits": "Adds flavor, some spices have antioxidant properties",
+    "risk": "Low"
+  },
+  "Toned Milk": {
+    "type": "Dairy",
+    "benefits": "Provides calcium and protein",
+    "risk": "Low"
+  },
+  "Stabilizers (415,412,407)": {
+    "type": "Stabilizer",
+    "concerns": "Derived from seaweed, may cause digestive discomfort in sensitive people",
+    "risk": "Moderate"
+  },
+  "Sequestrant (339ii)": {
+    "type": "Sequestrant",
+    "risk": "Low"
+  },
+  "Emulsifier (471)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed",
+    "risk": "Moderate"
+  },
+  "Emulsifiers (460i,466,471,407)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed; Derived from seaweed, may cause digestive discomfort in sensitive people",
+    "risk": "Moderate"
+  },
+  "Minerals": {
+    "type": "Vitamin/Mineral",
+    "benefits": "Added fortification nutrients",
+    "risk": "Low"
+  },
+  "Vitamins A,D2,E,B1,B2": {
+    "type": "Vitamin/Mineral",
+    "benefits": "Added fortification nutrients",
+    "risk": "Low"
+  },
+  "Common Salt": {
+    "type": "Seasoning",
+    "concerns": "High sodium if consumed in large quantities",
+    "benefits": "Iodized salt supports thyroid health",
+    "risk": "Moderate"
+  },
+  "Nature Identical & Artificial Vanilla Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Stabilizers (407,412,415)": {
+    "type": "Stabilizer",
+    "concerns": "Derived from seaweed, may cause digestive discomfort in sensitive people",
+    "risk": "Moderate"
+  },
+  "Acidity Regulator (339iii)": {
+    "type": "Acidity Regulator",
+    "risk": "Moderate"
+  },
+  "Sequestrant (451i)": {
+    "type": "Sequestrant",
+    "risk": "Low"
+  },
+  "Emulsifiers (460i,466,471)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed",
+    "risk": "Moderate"
+  },
+  "Vitamin E": {
+    "type": "Vitamin/Mineral",
+    "benefits": "Added fortification nutrients",
+    "risk": "Low"
+  },
+  "Vitamin A": {
+    "type": "Vitamin/Mineral",
+    "benefits": "Added fortification nutrients",
+    "risk": "Low"
+  },
+  "Vitamin D2": {
+    "type": "Vitamin/Mineral",
+    "benefits": "Added fortification nutrients",
+    "risk": "Low"
+  },
+  "Vitamin B1": {
+    "type": "Vitamin/Mineral",
+    "benefits": "Added fortification nutrients",
+    "risk": "Low"
+  },
+  "Vitamin B2": {
+    "type": "Vitamin/Mineral",
+    "benefits": "Added fortification nutrients",
+    "risk": "Low"
+  },
+  "Stabilizers (407,412)": {
+    "type": "Stabilizer",
+    "concerns": "Derived from seaweed, may cause digestive discomfort in sensitive people",
+    "risk": "Moderate"
+  },
+  "Chocolate Flavour": {
+    "type": "Flavoring",
+    "concerns": "Often paired with added sugar and fat",
+    "benefits": "Contains cocoa antioxidants",
+    "risk": "Moderate"
+  },
+  "Nature Identical Flavouring Substances": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Chocolate Ice Cream": {
+    "type": "Dairy",
+    "concerns": "High in added sugar and fat",
+    "risk": "Moderate"
+  },
+  "Emulsifiers (471,322)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed; Heavily processed, usually soy-derived (lecithin)",
+    "risk": "Moderate"
+  },
+  "Stabilizers (407,466,415,412)": {
+    "type": "Stabilizer",
+    "concerns": "Derived from seaweed, may cause digestive discomfort in sensitive people",
+    "risk": "Moderate"
+  },
+  "Cocoa Coating": {
+    "type": "Flavoring",
+    "benefits": "Contains cocoa antioxidants",
+    "risk": "Low"
+  },
+  "Wafer Biscuit": {
+    "type": "Grain",
+    "concerns": "Refined-flour baked component, low in fiber",
+    "risk": "Moderate"
+  },
+  "Emulsifiers (471,477)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed",
+    "risk": "Moderate"
+  },
+  "Stabilizers (410,412)": {
+    "type": "Stabilizer",
+    "risk": "Low"
+  },
+  "Artificial Butterscotch Flavour": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  },
+  "Caramel Color (150d)": {
+    "type": "Coloring",
+    "concerns": "Caramel colour, may contain controversial byproducts",
+    "risk": "Moderate"
+  },
+  "Emulsifiers (471,477,322)": {
+    "type": "Emulsifier",
+    "concerns": "Heavily processed; Heavily processed, usually soy-derived (lecithin)",
+    "risk": "Moderate"
+  },
+  "Chocolate Sauce": {
+    "type": "Flavoring",
+    "concerns": "Contains added sugar and fat",
+    "risk": "Moderate"
+  },
+  "Ice Cream": {
+    "type": "Dairy",
+    "concerns": "High in added sugar and fat",
+    "risk": "Moderate"
+  },
+  "Stabilizers (410,412,407)": {
+    "type": "Stabilizer",
+    "concerns": "Derived from seaweed, may cause digestive discomfort in sensitive people",
+    "risk": "Moderate"
+  },
+  "Chocolate Coating": {
+    "type": "Flavoring",
+    "concerns": "Often uses vegetable fat instead of cocoa butter",
+    "risk": "Moderate"
+  },
+  "Chocolate Flavoured Confectionery": {
+    "type": "Flavoring",
+    "concerns": "Imitation chocolate, more processed",
+    "risk": "Moderate"
+  },
+  "Stabilizers (415,410,412)": {
+    "type": "Stabilizer",
+    "risk": "Low"
+  },
+  "Chocolate Compound": {
+    "type": "Flavoring",
+    "concerns": "Uses vegetable fat instead of cocoa butter, more processed than real chocolate",
+    "risk": "Moderate"
+  },
+  "Multigrain Mix": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Corn Grits": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Wheat": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Rolled Barley": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Raisins": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Black Currants": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Cereal Extract": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Oligofructose": {
+    "type": "Fiber",
+    "benefits": "Prebiotic fiber that supports gut health",
+    "risk": "Low"
+  },
+  "Flax Seeds": {
+    "type": "Seed",
+    "benefits": "Source of fiber and healthy fats",
+    "risk": "Low"
+  },
+  "Pumpkin Seeds": {
+    "type": "Seed",
+    "benefits": "Source of fiber and healthy fats",
+    "risk": "Low"
+  },
+  "Corn": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Rice": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Oats": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Ragi Millet Flour": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Dry Fruits & Seeds": {
+    "type": "Seed",
+    "benefits": "Source of fiber and healthy fats",
+    "risk": "Low"
+  },
+  "Black Raisins": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Vitamins": {
+    "type": "Vitamin/Mineral",
+    "benefits": "Added fortification nutrients",
+    "risk": "Low"
+  },
+  "Antioxidant (307b)": {
+    "type": "Antioxidant",
+    "benefits": "Vitamin E",
+    "risk": "Low"
+  },
+  "Multigrains": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Rice Flakes": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Jowar Flakes": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Seeds": {
+    "type": "Seed",
+    "benefits": "Source of fiber and healthy fats",
+    "risk": "Low"
+  },
+  "Pumpkin": {
+    "type": "Seed",
+    "benefits": "Source of fiber and healthy fats",
+    "risk": "Low"
+  },
+  "Flax": {
+    "type": "Seed",
+    "benefits": "Source of fiber and healthy fats",
+    "risk": "Low"
+  },
+  "Almond": {
+    "type": "Nut",
+    "concerns": "Common allergen",
+    "benefits": "Healthy fats, protein, and fiber",
+    "risk": "Low"
+  },
+  "Steviol Glycosides": {
+    "type": "Sweetener",
+    "benefits": "Natural zero-calorie sweetener (stevia)",
+    "risk": "Low"
+  },
+  "Probiotics (Bacillus coagulans)": {
+    "type": "Probiotic",
+    "benefits": "Supports gut health",
+    "risk": "Low"
+  },
+  "Whole Grains": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Millets": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Ragi Flakes": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Nuts": {
+    "type": "Nut",
+    "concerns": "Common allergen",
+    "benefits": "Healthy fats, protein, and fiber",
+    "risk": "Low"
+  },
+  "Cranberry": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Brown Rice Flakes": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Quinoa Flakes": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Dried Fruits": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness (concentrated, so also higher in sugar per gram)",
+    "risk": "Low"
+  },
+  "Apricots": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Blackcurrants": {
+    "type": "Fruit",
+    "benefits": "Rich in vitamin C and antioxidants",
+    "risk": "Low"
+  },
+  "Chia": {
+    "type": "Seed",
+    "benefits": "Source of fiber and healthy fats",
+    "risk": "Low"
+  },
+  "Strawberry Powder": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Date Syrup": {
+    "type": "Sweetener",
+    "benefits": "Naturally sweet, retains some fiber and minerals",
+    "risk": "Low"
+  },
+  "Soy Protein Isolate": {
+    "type": "Protein",
+    "concerns": "Common allergen",
+    "benefits": "Plant-based protein source",
+    "risk": "Low"
+  },
+  "Dark Chocolate": {
+    "type": "Flavoring",
+    "concerns": "Often paired with added sugar and fat",
+    "benefits": "Contains cocoa antioxidants",
+    "risk": "Moderate"
+  },
+  "Ragi": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Jowar": {
+    "type": "Grain",
+    "benefits": "Whole grain, provides fiber and micronutrients",
+    "risk": "Low"
+  },
+  "Wheat Flakes": {
+    "type": "Grain",
+    "benefits": "Provides carbohydrates and some fiber",
+    "risk": "Low"
+  },
+  "Date Paste": {
+    "type": "Sweetener",
+    "benefits": "Naturally sweet, retains some fiber and minerals",
+    "risk": "Low"
+  },
+  "Soy Protein Crisps": {
+    "type": "Protein",
+    "concerns": "Common allergen",
+    "benefits": "Plant-based protein source",
+    "risk": "Low"
+  },
+  "Peanut Protein": {
+    "type": "Nut",
+    "concerns": "Common allergen",
+    "benefits": "Healthy fats, protein, and fiber",
+    "risk": "Low"
+  },
+  "Blueberry": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Whey Protein": {
+    "type": "Protein",
+    "benefits": "High-quality complete protein",
+    "risk": "Low"
+  },
+  "Chocolate": {
+    "type": "Flavoring",
+    "concerns": "Often paired with added sugar and fat",
+    "benefits": "Contains cocoa antioxidants",
+    "risk": "Moderate"
+  },
+  "Peanut Butter": {
+    "type": "Fat",
+    "concerns": "High in saturated fat",
+    "benefits": "Natural dairy fat",
+    "risk": "Moderate"
+  },
+  "Dates": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness",
+    "risk": "Low"
+  },
+  "Gum Acacia": {
+    "type": "Stabilizer",
+    "benefits": "Natural plant-derived thickener",
+    "risk": "Low"
+  },
+  "Dark Chocolate Paste": {
+    "type": "Flavoring",
+    "concerns": "Often paired with added sugar and fat",
+    "benefits": "Contains cocoa antioxidants",
+    "risk": "Moderate"
+  },
+  "Soy Lecithin": {
+    "type": "Protein",
+    "concerns": "Common allergen",
+    "benefits": "Plant-based protein source",
+    "risk": "Low"
+  },
+  "Cashew Paste": {
+    "type": "Nut",
+    "concerns": "Common allergen",
+    "benefits": "Healthy fats, protein, and fiber",
+    "risk": "Low"
+  },
+  "Textured Soy Protein": {
+    "type": "Protein",
+    "concerns": "Common allergen",
+    "benefits": "Plant-based protein source",
+    "risk": "Low"
+  },
+  "Almond Paste": {
+    "type": "Nut",
+    "concerns": "Common allergen",
+    "benefits": "Healthy fats, protein, and fiber",
+    "risk": "Low"
+  },
+  "Whey Protein Concentrate": {
+    "type": "Protein",
+    "benefits": "High-quality complete protein",
+    "risk": "Low"
+  },
+  "Skim Milk Powder": {
+    "type": "Dairy",
+    "benefits": "Provides calcium and protein",
+    "risk": "Low"
+  },
+  "Edible Vegetable Fat": {
+    "type": "Fat",
+    "concerns": "Often high in saturated/processed fat",
+    "risk": "Moderate"
+  },
+  "Dry Fruits": {
+    "type": "Fruit",
+    "benefits": "Provides vitamins, fiber, and natural sweetness (concentrated, so also higher in sugar per gram)",
+    "risk": "Low"
+  },
+  "Cocoa Nibs": {
+    "type": "Flavoring",
+    "benefits": "Rich in antioxidants",
+    "risk": "Low"
+  },
+  "Natural Flavours": {
+    "type": "Flavoring",
+    "concerns": "Nature-identical and artificial flavours are synthetic in origin and may be allergenic to sensitive individuals",
+    "risk": "Moderate"
+  }
+}
