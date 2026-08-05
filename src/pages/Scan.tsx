@@ -154,7 +154,7 @@ export function Scan() {
             {/* Top Section */}
             <div className="flex flex-col sm:flex-row gap-6 mb-5">
                {/* Image Box */}
-               <div className="w-[180px] h-[180px] bg-white border border-gray-100 rounded-2xl flex items-center justify-center p-3 shrink-0 shadow-sm">
+               <div className="w-full sm:w-[180px] h-[180px] bg-white border border-gray-100 rounded-2xl flex items-center justify-center p-3 shrink-0 shadow-sm">
                  <img src={`/${product.image}`} alt={product.name} className="max-w-full max-h-full object-contain mix-blend-multiply drop-shadow-sm" />
                </div>
                
@@ -177,7 +177,7 @@ export function Scan() {
                </div>
             </div>
             {/* Quick Facts Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 mt-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mt-auto">
                
                {/* Fact 1: Net Weight */}
                <div className="border border-gray-100 rounded-xl p-2.5 flex flex-col items-center justify-center bg-white shadow-sm hover:shadow-md transition-shadow">
@@ -246,7 +246,7 @@ export function Scan() {
                 Age-Wise NutriGuard Scores
               </h3>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 flex-1">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-1">
               <AgeScoreCard ageGroup="Child" ageRange="4-12 yrs" {...scoreData.ageWise.child} />
               <AgeScoreCard ageGroup="Teen" ageRange="13-18 yrs" {...scoreData.ageWise.teen} />
               <AgeScoreCard ageGroup="Adult" ageRange="19-59 yrs" {...scoreData.ageWise.adult} />
@@ -263,7 +263,7 @@ export function Scan() {
               <span className="p-1.5 bg-blue-100 text-blue-600 rounded"><Activity className="w-4 h-4"/></span>
               Product Details & Nutrition <span className="text-xs text-gray-400 font-normal ml-2">(Per 100g)</span>
             </h3>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
               <NutritionCard icon={Flame} label="Energy" value={product.nutrition.calories} unit="kcal" color="text-blue-500" />
               <NutritionCard icon={Droplet} label="Total Fat" value={product.nutrition.fat} unit="g" color="text-blue-500" />
               <NutritionCard icon={Hexagon} label="Saturated Fat" value={product.nutrition.saturatedFat} unit="g" color="text-red-500" />
@@ -319,7 +319,7 @@ export function Scan() {
              <span className="p-1.5 bg-purple-100 text-purple-600 rounded"><AlertCircle className="w-4 h-4"/></span>
              Why This Score?
            </h3>
-           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
               <div className="p-4 border border-gray-100 rounded-xl bg-gray-50 flex flex-col">
                 <div className="flex gap-3 items-start mb-2">
                   <AlertTriangle className="w-6 h-6 text-orange-500 shrink-0" />
@@ -394,7 +394,7 @@ export function Scan() {
                </h3>
                <button className="text-xs font-medium text-primary hover:underline">View All</button>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1">
               {alternatives.map((alt, index) => (
                 <ComparisonCard key={alt.id} alt={alt} rank={index + 1} />
               ))}
