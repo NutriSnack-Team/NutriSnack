@@ -19,7 +19,8 @@ const referenceIntakes: Record<string, any> = {
     sodium: 1200,   
     saturatedFat: 15, 
     transFat: 1.5,    
-    cholesterol: 300 
+    cholesterol: 300,
+    caffeine: 40
   },
   teen: { 
     calories: 2560, 
@@ -30,7 +31,8 @@ const referenceIntakes: Record<string, any> = {
     sodium: 1800, 
     saturatedFat: 28, 
     transFat: 2.8, 
-    cholesterol: 300 
+    cholesterol: 300,
+    caffeine: 100
   },
   adult: { 
     calories: 1865, 
@@ -41,7 +43,8 @@ const referenceIntakes: Record<string, any> = {
     sodium: 2000, 
     saturatedFat: 21, 
     transFat: 2.0, 
-    cholesterol: 300 
+    cholesterol: 300,
+    caffeine: 400
   },
   elderly: { 
     calories: 1925, 
@@ -52,7 +55,8 @@ const referenceIntakes: Record<string, any> = {
     sodium: 2000, 
     saturatedFat: 21, 
     transFat: 2.0, 
-    cholesterol: 300 
+    cholesterol: 300,
+    caffeine: 200
   }
 };
 
@@ -64,36 +68,42 @@ const kValues: Record<string, number> = {
   saturatedFat: 0.0151,
   transFat: 0.0599,
   cholesterol: 0.0135,
+  caffeine: 0.0212
 };
 
 const kp = 0.0230; // Decay for positive nutrients
 
 const categoryWeights: Record<string, any> = {
-  "Biscuits": { calories: 10, protein: 10, fiber: 10, totalSugar: 20, addedSugar: 15, sodium: 10, saturatedFat: 10, transFat: 5, cholesterol: 10 },
-  "Cream Biscuits": { calories: 10, protein: 8, fiber: 8, totalSugar: 25, addedSugar: 20, sodium: 8, saturatedFat: 12, transFat: 4, cholesterol: 5 },
-  "Chips & Snacks": { calories: 10, protein: 5, fiber: 10, totalSugar: 10, addedSugar: 5, sodium: 30, saturatedFat: 15, transFat: 10, cholesterol: 5 },
-  "Chips": { calories: 10, protein: 5, fiber: 10, totalSugar: 10, addedSugar: 5, sodium: 30, saturatedFat: 15, transFat: 10, cholesterol: 5 },
-  "Chocolates": { calories: 8, protein: 5, fiber: 5, totalSugar: 30, addedSugar: 25, sodium: 5, saturatedFat: 15, transFat: 2, cholesterol: 5 },
-  "Protein Bars": { calories: 8, protein: 20, fiber: 15, totalSugar: 10, addedSugar: 5, sodium: 10, saturatedFat: 8, transFat: 4, cholesterol: 20 },
-  "Muesli & Cereals": { calories: 10, protein: 15, fiber: 20, totalSugar: 15, addedSugar: 5, sodium: 10, saturatedFat: 5, transFat: 5, cholesterol: 15 },
-  "Drinks": { calories: 10, protein: 5, fiber: 5, totalSugar: 35, addedSugar: 20, sodium: 15, saturatedFat: 3, transFat: 2, cholesterol: 5 },
-  "Milkshakes": { calories: 10, protein: 15, fiber: 5, totalSugar: 25, addedSugar: 15, sodium: 10, saturatedFat: 10, transFat: 5, cholesterol: 5 },
-  "Ice Cream": { calories: 8, protein: 10, fiber: 2, totalSugar: 30, addedSugar: 20, sodium: 5, saturatedFat: 15, transFat: 5, cholesterol: 5 }
+  "Biscuits": { calories: 10, protein: 10, fiber: 10, totalSugar: 20, addedSugar: 15, sodium: 10, saturatedFat: 10, transFat: 5, cholesterol: 10, caffeine: 0 },
+  "Cream Biscuits": { calories: 10, protein: 8, fiber: 8, totalSugar: 25, addedSugar: 20, sodium: 8, saturatedFat: 12, transFat: 4, cholesterol: 5, caffeine: 0 },
+  "Chips & Snacks": { calories: 10, protein: 5, fiber: 10, totalSugar: 10, addedSugar: 5, sodium: 30, saturatedFat: 15, transFat: 10, cholesterol: 5, caffeine: 0 },
+  "Chips": { calories: 10, protein: 5, fiber: 10, totalSugar: 10, addedSugar: 5, sodium: 30, saturatedFat: 15, transFat: 10, cholesterol: 5, caffeine: 0 },
+  "Chocolates": { calories: 8, protein: 5, fiber: 5, totalSugar: 30, addedSugar: 25, sodium: 5, saturatedFat: 15, transFat: 2, cholesterol: 5, caffeine: 0 },
+  "Protein Bars": { calories: 8, protein: 20, fiber: 15, totalSugar: 10, addedSugar: 5, sodium: 10, saturatedFat: 8, transFat: 4, cholesterol: 20, caffeine: 0 },
+  "Muesli & Cereals": { calories: 10, protein: 15, fiber: 20, totalSugar: 15, addedSugar: 5, sodium: 10, saturatedFat: 5, transFat: 5, cholesterol: 15, caffeine: 0 },
+  "Drinks": { calories: 10, protein: 5, fiber: 5, totalSugar: 35, addedSugar: 20, sodium: 10, saturatedFat: 3, transFat: 2, cholesterol: 5, caffeine: 5 },
+  "Milkshakes": { calories: 10, protein: 15, fiber: 5, totalSugar: 25, addedSugar: 15, sodium: 10, saturatedFat: 10, transFat: 5, cholesterol: 5, caffeine: 0 },
+  "Ice Cream": { calories: 8, protein: 10, fiber: 2, totalSugar: 30, addedSugar: 20, sodium: 5, saturatedFat: 15, transFat: 5, cholesterol: 5, caffeine: 0 },
+  "Milk": { calories: 10, protein: 25, fiber: 0, totalSugar: 15, addedSugar: 10, sodium: 5, saturatedFat: 25, transFat: 3, cholesterol: 7, caffeine: 0 },
+  "Dairy Drinks": { calories: 10, protein: 15, fiber: 0, totalSugar: 20, addedSugar: 15, sodium: 15, saturatedFat: 15, transFat: 3, cholesterol: 7, caffeine: 0 },
+  "Health Drinks": { calories: 10, protein: 15, fiber: 5, totalSugar: 25, addedSugar: 20, sodium: 5, saturatedFat: 8, transFat: 2, cholesterol: 5, caffeine: 5 },
+  "Dry Fruits & Nuts": { calories: 10, protein: 15, fiber: 20, totalSugar: 10, addedSugar: 5, sodium: 10, saturatedFat: 20, transFat: 5, cholesterol: 5, caffeine: 0 },
+  "Seeds": { calories: 8, protein: 15, fiber: 25, totalSugar: 5, addedSugar: 5, sodium: 10, saturatedFat: 22, transFat: 5, cholesterol: 5, caffeine: 0 }
 };
 
 const defaultCategoryWeights = categoryWeights["Biscuits"];
 
 export const getGradeAndColor = (score: number) => {
-  if (score >= 90) return { grade: 'A+', label: 'Excellent', color: 'text-green-700', bg: 'bg-green-100' };
-  if (score >= 80) return { grade: 'A', label: 'Great', color: 'text-green-600', bg: 'bg-green-50' };
-  if (score >= 70) return { grade: 'B+', label: 'Good', color: 'text-teal-600', bg: 'bg-teal-50' };
-  if (score >= 60) return { grade: 'B', label: 'Above Average', color: 'text-blue-600', bg: 'bg-blue-50' };
-  if (score >= 50) return { grade: 'C+', label: 'Moderate', color: 'text-yellow-600', bg: 'bg-yellow-50' };
-  if (score >= 40) return { grade: 'C', label: 'Average', color: 'text-orange-500', bg: 'bg-orange-50' };
-  if (score >= 30) return { grade: 'C-', label: 'Below Average', color: 'text-orange-600', bg: 'bg-orange-100' };
-  if (score >= 20) return { grade: 'D+', label: 'Poor', color: 'text-red-500', bg: 'bg-red-50' };
-  if (score >= 10) return { grade: 'D', label: 'Very Poor', color: 'text-red-600', bg: 'bg-red-100' };
-  return { grade: 'E', label: 'Avoid', color: 'text-red-700', bg: 'bg-red-200' };
+  if (score >= 90) return { grade: 'A+', label: 'Excellent Choice', color: 'text-green-700', bg: 'bg-green-100' };
+  if (score >= 80) return { grade: 'A', label: 'Very Good Choice', color: 'text-green-600', bg: 'bg-green-50' };
+  if (score >= 70) return { grade: 'B+', label: 'Good Choice', color: 'text-teal-600', bg: 'bg-teal-50' };
+  if (score >= 60) return { grade: 'B', label: 'Healthy Choice', color: 'text-blue-600', bg: 'bg-blue-50' };
+  if (score >= 50) return { grade: 'C+', label: 'Acceptable in Moderation', color: 'text-yellow-600', bg: 'bg-yellow-50' };
+  if (score >= 40) return { grade: 'C', label: 'Moderate Consumption', color: 'text-orange-500', bg: 'bg-orange-50' };
+  if (score >= 30) return { grade: 'C-', label: 'Consume Occasionally', color: 'text-orange-600', bg: 'bg-orange-100' };
+  if (score >= 20) return { grade: 'D+', label: 'Limit Consumption', color: 'text-red-500', bg: 'bg-red-50' };
+  if (score >= 10) return { grade: 'D', label: 'Rarely Recommended', color: 'text-red-600', bg: 'bg-red-100' };
+  return { grade: 'E', label: 'Avoid Frequent Consumption', color: 'text-red-700', bg: 'bg-red-200' };
 };
 
 // 4. Ingredient Families
@@ -128,6 +138,7 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
       saturatedFat: product.nutrition.saturatedFat || 0,
       transFat: product.nutrition.transFat || 0,
       cholesterol: product.nutrition.cholesterol || 0,
+      caffeine: product.nutrition.caffeine || 0,
     };
 
     let p: Record<string, number> = {};
@@ -135,7 +146,7 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
       p[key] = (nut[key] / refIntakes[key]) * 100;
     }
 
-    let negativeKeys = ['calories', 'totalSugar', 'addedSugar', 'sodium', 'saturatedFat', 'transFat', 'cholesterol'];
+    let negativeKeys = ['calories', 'totalSugar', 'addedSugar', 'sodium', 'saturatedFat', 'transFat', 'cholesterol', 'caffeine'];
     let totalWNeg = 0;
     let weightedSumLnSNeg = 0;
     let worstSNegScore = 100;
@@ -268,7 +279,7 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
     return Math.max(0, Math.min(100, novaBase - penalties));
   };
 
-  const getAdditiveScore = () => {
+  const getAdditiveScore = (ageGroup: string) => {
     const hasAdditiveKeyword = (product.ingredients || []).some((ing: string) => {
       let lower = ing.toLowerCase();
       return ['emulsifier', 'colour', 'color', 'preservative', 'stabilizer', 'acidity regulator', 'sweetener', 'raising agent', 'flavour enhancer', 'sequestrant', 'antioxidant', 'ins', 'e '].some(k => lower.includes(k));
@@ -294,6 +305,11 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
       if (matches) matches.forEach(m => detectedCodes.add(m.toLowerCase()));
     });
 
+    let sweetenerRiskMultiplier = 1.0;
+    if (ageGroup === 'child') sweetenerRiskMultiplier = 2.0;
+    else if (ageGroup === 'teen') sweetenerRiskMultiplier = 1.5;
+    else if (ageGroup === 'elderly') sweetenerRiskMultiplier = 1.2;
+
     count = detectedCodes.size;
     if (count === 0 && hasAdditiveKeyword) {
       let keywordCount = 0;
@@ -308,28 +324,47 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
         let risk = 2; // Precautionary Medium
         if (additiveRisks[code] !== undefined) risk = additiveRisks[code];
         else if (additiveRisks[code.replace(/[a-z]+$/i, '')] !== undefined) risk = additiveRisks[code.replace(/[a-z]+$/i, '')];
-        totalRisk += risk;
+        
+        let isSweetener = ['950', '951', '955'].includes(code);
+        if (!isSweetener) {
+          isSweetener = (product.ingredients || []).some((ing: string) => ing.toLowerCase().includes(code) && ing.toLowerCase().includes('sweetener'));
+        }
+
+        let finalRisk = isSweetener ? risk * sweetenerRiskMultiplier : risk;
+        totalRisk += finalRisk;
+
         if (risk >= 8) hasCritical = true;
         if (risk === 5) hasHigh = true;
       });
     }
 
     let A = 100 * Math.exp(-0.12 * totalRisk) - (4 * count);
-    if (hasCritical) A = Math.min(A, 30);
-    else if (hasHigh) A = Math.min(A, 50);
+    
+    let criticalCeiling = 30;
+    let highCeiling = 50;
+    if (ageGroup === 'child') {
+      criticalCeiling = 15;
+      highCeiling = 30;
+    } else if (ageGroup === 'elderly') {
+      criticalCeiling = 20;
+      highCeiling = 35;
+    }
+
+    if (hasCritical) A = Math.min(A, criticalCeiling);
+    else if (hasHigh) A = Math.min(A, highCeiling);
     return Math.max(0, A);
   };
 
   let I = getIngredientScore();
   let P = getProcessingScore();
-  let A = getAdditiveScore();
   let scale = novaScale[product.nova || 4] || 0.50;
 
   const calculateFinalAgeScore = (ageGroup: string): AgeScore => {
     let N = getNutritionScore(ageGroup);
-    let NGS_raw = 0.35 * N + 0.20 * I + 0.15 * P + 0.30 * A;
+    let A_age = getAdditiveScore(ageGroup);
+    let NGS_raw = 0.35 * N + 0.20 * I + 0.15 * P + 0.30 * A_age;
     let NGS = Math.round(NGS_raw * scale);
-    return { score: Math.max(0, Math.min(100, NGS)), components: { N: Math.round(N), I: Math.round(I), P: Math.round(P), A: Math.round(A) }, ...getGradeAndColor(NGS) };
+    return { score: Math.max(0, Math.min(100, NGS)), components: { N: Math.round(N), I: Math.round(I), P: Math.round(P), A: Math.round(A_age) }, ...getGradeAndColor(NGS) };
   };
 
   const adultScore = calculateFinalAgeScore('adult');
