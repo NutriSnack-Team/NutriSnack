@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   UploadBox, AgeScoreCard, NutritionCard, IngredientChip, 
-  CalculationTable, RecommendationCard, 
+  ScoreBreakdown, RecommendationCard, 
   ComparisonCard, CompareTable 
 } from '@/components';
 import { useAppStore } from '@/store/useAppStore';
-import { Flame, Droplet, Activity, Hexagon, ShieldAlert, Factory, AlertTriangle, AlertCircle } from 'lucide-react';
+import { Flame, Droplet, Activity, Hexagon, Factory, AlertTriangle } from 'lucide-react';
 import { calculateNutriGuardScore, getGradeAndColor } from '@/utils';
-import type { ScoreBreakdown } from '@/types';
+import type { ScoreBreakdown as ScoreBreakdownType } from '@/types';
 
 import productsData from '@/data/products.json';
 import ingredientsData from '@/data/ingredients.json';
@@ -23,7 +23,7 @@ export function Scan() {
   const activeId = id ? parseInt(id) : scanResultId;
 
   const [product, setProduct] = useState<any>(null);
-  const [scoreData, setScoreData] = useState<ScoreBreakdown | null>(null);
+  const [scoreData, setScoreData] = useState<ScoreBreakdownType | null>(null);
   const [ingredients, setIngredients] = useState<any[]>([]);
   const [alternatives, setAlternatives] = useState<any[]>([]);
   const [recommendations, setRecommendations] = useState<any>(null);
@@ -308,69 +308,10 @@ export function Scan() {
 
         </div>
 
-         {/* Row 3: Score Calculation */}
-         <div className="grid grid-cols-1 gap-6">
-            <CalculationTable score={scoreData.overall} components={scoreData.components} nova={product.nova || 4} flags={scoreData.flags} />
+         {/* Row 3: Unified Score Breakdown */}
+         <div className="mb-6">
+            <ScoreBreakdown product={product} scoreData={scoreData} />
          </div>
-
-        {/* Row 4: Why This Score? */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-           <h3 className="font-semibold text-gray-900 mb-6 flex items-center gap-2">
-             <span className="p-1.5 bg-purple-100 text-purple-600 rounded"><AlertCircle className="w-4 h-4"/></span>
-             Why This Score?
-           </h3>
-           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-              <div className="p-4 border border-gray-100 rounded-xl bg-gray-50 flex flex-col">
-                <div className="flex gap-3 items-start mb-2">
-                  <AlertTriangle className="w-6 h-6 text-orange-500 shrink-0" />
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm leading-tight">High Sodium<br/>{product.nutrition.sodium}mg</h4>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-500 mt-auto pt-2">Above recommended limit for this category.</p>
-              </div>
-
-              <div className="p-4 border border-gray-100 rounded-xl bg-gray-50 flex flex-col">
-                <div className="flex gap-3 items-start mb-2">
-                  <Flame className="w-6 h-6 text-red-500 shrink-0" />
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm leading-tight">High Saturated Fat<br/>{product.nutrition.saturatedFat}g</h4>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-500 mt-auto pt-2">Above recommended limit for this category.</p>
-              </div>
-
-              <div className="p-4 border border-gray-100 rounded-xl bg-gray-50 flex flex-col">
-                <div className="flex gap-3 items-start mb-2">
-                  <Factory className="w-6 h-6 text-purple-600 shrink-0" />
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm leading-tight">Ultra-Processed<br/>(NOVA {product.nova})</h4>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-500 mt-auto pt-2">Highly processed with additives.</p>
-              </div>
-
-              <div className="p-4 border border-gray-100 rounded-xl bg-gray-50 flex flex-col">
-                <div className="flex gap-3 items-start mb-2">
-                  <Activity className="w-6 h-6 text-pink-500 shrink-0" />
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm leading-tight">Contains MSG<br/>(INS 621)</h4>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-500 mt-auto pt-2">May cause sensitivity in some individuals.</p>
-              </div>
-
-              <div className="p-4 border border-blue-200 rounded-xl bg-blue-50 flex flex-col">
-                <div className="flex gap-3 items-start mb-2">
-                  <ShieldAlert className="w-6 h-6 text-blue-600 shrink-0" />
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm leading-tight">Bonus Zero Rule<br/>Triggered</h4>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-500 mt-auto pt-2">Due to severe violations in key nutrients.</p>
-              </div>
-           </div>
-        </div>
 
         {/* Row 5: Recommendations (Left) | Better Alternatives (Right) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

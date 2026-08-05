@@ -6,7 +6,7 @@ export * from './layout/Navbar';
 export * from './products/ProductCard';
 export * from './products/SearchBar';
 export * from './scan/AgeScoreCard';
-export * from './scan/CalculationTable';
+export * from './scan/ScoreBreakdown';
 export * from './scan/CompareTable';
 export * from './scan/ComparisonCard';
 export * from './scan/IngredientChip';
