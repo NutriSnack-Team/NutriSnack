@@ -28,21 +28,21 @@ const referenceIntakes: Record<string, any> = {
     fiber: 33, 
     totalSugar: 64, 
     addedSugar: 32, 
-    sodium: 1800, 
+    sodium: 1800,   
     saturatedFat: 28, 
-    transFat: 2.8, 
+    transFat: 2.8,    
     cholesterol: 300,
     caffeine: 100
   },
   adult: { 
     calories: 1865, 
     protein: 50, 
-    fiber: 28,   
+    fiber: 28, 
     totalSugar: 47, 
     addedSugar: 23, 
-    sodium: 2000, 
+    sodium: 2000,   
     saturatedFat: 21, 
-    transFat: 2.0, 
+    transFat: 2.0,    
     cholesterol: 300,
     caffeine: 400
   },
@@ -52,9 +52,9 @@ const referenceIntakes: Record<string, any> = {
     fiber: 28, 
     totalSugar: 48, 
     addedSugar: 24, 
-    sodium: 2000, 
+    sodium: 2000,   
     saturatedFat: 21, 
-    transFat: 2.0, 
+    transFat: 2.0,    
     cholesterol: 300,
     caffeine: 200
   }
@@ -70,14 +70,13 @@ const kValues: Record<string, number> = {
   cholesterol: 0.0135,
   caffeine: 0.0212
 };
+const kp = 0.0230;
 
-const kp = 0.0230; // Decay for positive nutrients
-
-const categoryWeights: Record<string, any> = {
+// 3. Category Weight Matrix
+const categoryWeights: Record<string, Record<string, number>> = {
   "Biscuits": { calories: 10, protein: 10, fiber: 10, totalSugar: 20, addedSugar: 15, sodium: 10, saturatedFat: 10, transFat: 5, cholesterol: 10, caffeine: 0 },
   "Cream Biscuits": { calories: 10, protein: 8, fiber: 8, totalSugar: 25, addedSugar: 20, sodium: 8, saturatedFat: 12, transFat: 4, cholesterol: 5, caffeine: 0 },
   "Chips & Snacks": { calories: 10, protein: 5, fiber: 10, totalSugar: 10, addedSugar: 5, sodium: 30, saturatedFat: 15, transFat: 10, cholesterol: 5, caffeine: 0 },
-  "Chips": { calories: 10, protein: 5, fiber: 10, totalSugar: 10, addedSugar: 5, sodium: 30, saturatedFat: 15, transFat: 10, cholesterol: 5, caffeine: 0 },
   "Chocolates": { calories: 8, protein: 5, fiber: 5, totalSugar: 30, addedSugar: 25, sodium: 5, saturatedFat: 15, transFat: 2, cholesterol: 5, caffeine: 0 },
   "Protein Bars": { calories: 8, protein: 20, fiber: 15, totalSugar: 10, addedSugar: 5, sodium: 10, saturatedFat: 8, transFat: 4, cholesterol: 20, caffeine: 0 },
   "Muesli & Cereals": { calories: 10, protein: 15, fiber: 20, totalSugar: 15, addedSugar: 5, sodium: 10, saturatedFat: 5, transFat: 5, cholesterol: 15, caffeine: 0 },
@@ -121,24 +120,57 @@ export const additiveRisks: Record<string, number> = {
   '322': 0, '330': 0, '412': 0, '415': 0, '440': 0, '296': 0, '300': 0, '307b': 0, '331': 0, '334': 0, '336': 0, '339ii': 0, '339iii': 0, '385': 0, '407': 0, '410': 0, '460i': 0, '471': 0, '472e': 0, '500ii': 0, '503ii': 0, '516': 0
 };
 
-export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
+// Section 2a: Natural-Nutrient Dampening Whitelist
+const naturalDampeningWhitelist: Record<string, string[]> = {
+  "Milk": ["saturatedFat", "cholesterol"],
+  "Dairy Drinks": ["saturatedFat"],
+  "Dry Fruits & Nuts": ["saturatedFat"],
+  "Seeds": ["saturatedFat"]
+};
+
+// Helper: Calculate internal NGS
+const calculateInternalNGS = (product: any, overrideNova?: number): { scoreBreakdown: ScoreBreakdown, missingDataError: boolean } => {
   const flags: string[] = [];
+  
+  // Section 8: Missing & Implausible Data Check
+  let missingDataError = false;
+  if (!product.nutrition ||
+      product.nutrition.calories === undefined ||
+      product.nutrition.protein === undefined ||
+      (product.nutrition.totalSugars === undefined && product.nutrition.sugar === undefined) ||
+      (product.nutrition.totalFat === undefined && product.nutrition.fat === undefined) ||
+      product.nutrition.saturatedFat === undefined ||
+      product.nutrition.transFat === undefined ||
+      product.nutrition.sodium === undefined) {
+    flags.push('mandatory_nutrient_undeclared');
+    missingDataError = true;
+  }
+  
+  // Section 12: Allergen Flag
+  if (product.allergens === undefined || product.allergens.length === 0) {
+    flags.push('allergen_undeclared');
+  }
+
+  // Section 14: Amplified Exposure Category
+  if (['Milkshakes', 'Drinks', 'Ice Cream', 'Health Drinks'].includes(product.category)) {
+    flags.push('amplified_exposure_category');
+  }
 
   const getNutritionScore = (ageGroup: string) => {
     const weights = categoryWeights[product.category] || defaultCategoryWeights;
     const refIntakes = referenceIntakes[ageGroup];
 
     let nut: Record<string, number> = {
-      calories: product.nutrition.calories || 0,
-      protein: product.nutrition.protein || 0,
-      fiber: product.nutrition.fiber || 0,
-      totalSugar: product.nutrition.totalSugars || product.nutrition.sugar || 0,
-      addedSugar: product.nutrition.addedSugars || product.nutrition.addedSugar || 0,
-      sodium: product.nutrition.sodium || 0,
-      saturatedFat: product.nutrition.saturatedFat || 0,
-      transFat: product.nutrition.transFat || 0,
-      cholesterol: product.nutrition.cholesterol || 0,
-      caffeine: product.nutrition.caffeine || 0,
+      calories: product.nutrition?.calories || 0,
+      protein: product.nutrition?.protein || 0,
+      fiber: product.nutrition?.fiber || 0,
+      totalSugar: product.nutrition?.totalSugars || product.nutrition?.sugar || 0,
+      addedSugar: product.nutrition?.addedSugars || product.nutrition?.addedSugar || 0,
+      sodium: product.nutrition?.sodium || 0,
+      saturatedFat: product.nutrition?.saturatedFat || 0,
+      transFat: product.nutrition?.transFat || 0,
+      cholesterol: product.nutrition?.cholesterol || 0,
+      caffeine: product.nutrition?.caffeine || 0,
     };
 
     let p: Record<string, number> = {};
@@ -150,6 +182,7 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
     let totalWNeg = 0;
     let weightedSumLnSNeg = 0;
     let worstSNegScore = 100;
+    let worstNutrientKey = 'calories';
     
     for (const key of negativeKeys) {
       let w = weights[key];
@@ -157,11 +190,14 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
         totalWNeg += w;
         let s_i = 100 * Math.exp(-kValues[key] * p[key]);
         if ((key === 'calories' || key === 'totalSugar' || key === 'sodium' || key === 'saturatedFat' || key === 'transFat') && 
-            (product.nutrition[key] === undefined && product.nutrition[key === 'totalSugar' ? 'sugar' : key] === undefined)) {
+            (product.nutrition && product.nutrition[key] === undefined && product.nutrition[key === 'totalSugar' ? 'sugar' : key] === undefined)) {
           s_i = 0; 
         }
         let safe_s_i = Math.max(s_i, 1e-10);
-        if (s_i < worstSNegScore) worstSNegScore = s_i;
+        if (s_i < worstSNegScore) {
+          worstSNegScore = s_i;
+          worstNutrientKey = key;
+        }
         weightedSumLnSNeg += w * Math.log(safe_s_i);
       }
     }
@@ -183,12 +219,30 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
     let N_pos = totalWPos > 0 ? N_pos_sum / totalWPos : 0;
 
     let N_weighted_average = N_neg * (totalWNeg / 100) + N_pos * (totalWPos / 100);
-    let N = 0.3 * N_weighted_average + 0.7 * worstSNegScore;
-    return Math.max(0, Math.min(100, N));
+    
+    // Section 2a: Natural-Nutrient Dampening
+    let isDampened = false;
+    let nova = overrideNova !== undefined ? overrideNova : (product.nova || 4);
+    if (nova <= 2 && naturalDampeningWhitelist[product.category] && naturalDampeningWhitelist[product.category].includes(worstNutrientKey)) {
+      isDampened = true;
+    }
+    
+    let N = isDampened 
+      ? 0.5 * N_weighted_average + 0.5 * worstSNegScore
+      : 0.3 * N_weighted_average + 0.7 * worstSNegScore;
+
+    return {
+      score: Math.max(0, Math.min(100, N)),
+      worstKey: worstNutrientKey,
+      worstDV: p[worstNutrientKey],
+      worstSubScore: worstSNegScore,
+      pMap: p
+    };
   };
 
   const getIngredientScore = () => {
-    if (product.nova === 1) return 100;
+    let nova = overrideNova !== undefined ? overrideNova : (product.nova || 4);
+    if (nova === 1) return 100;
     if (!product.ingredients || product.ingredients.length === 0) return 0;
     let i_score = 50;
     const ingredients = product.ingredients.map((ing: string) => ing.toLowerCase().trim());
@@ -203,7 +257,6 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
       let ing = ingredients[idx];
       let pos = idx + 1;
       
-      // Track distinct sugar aliases for sugar splitting detection
       familyAddedSugars.forEach(sugar => {
         if (ing.includes(sugar)) {
           familiesFound.add('addedSugars');
@@ -239,7 +292,6 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
 
     i_score = 50 + positiveContribution - (4 * genericProcessedCount) - positionPenaltyTotal;
     
-    // Sugar Splitting Penalty (-10)
     if (sugarAliasesFound.size >= 3) {
       i_score -= 10;
       flags.push('sugar_split');
@@ -251,10 +303,9 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
   };
 
   const getProcessingScore = () => {
-    let nova = product.nova || 4;
+    let nova = overrideNova !== undefined ? overrideNova : (product.nova || 4);
     if (nova === 1) return 100;
     
-    let novaBase = nova === 2 ? 85 : nova === 3 ? 60 : 35;
     let penalties = 0;
     const firstIng = product.ingredients && product.ingredients.length > 0 ? product.ingredients[0].toLowerCase() : '';
     let isHighlyRefined = familyRefinedFlour.some(f => firstIng.includes(f)) || familyAddedSugars.some(f => firstIng.includes(f)) || firstIng.includes('starch');
@@ -263,20 +314,12 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
       if (product.ingredients.some((i: string) => ['flavour', 'colour', 'sweetener', 'flavor', 'color'].some(k => i.toLowerCase().includes(k)))) isFormulatedBase = true;
     }
     const isInstant = product.category === 'Muesli & Cereals' || product.isInstant;
-    const isReadyToEat = ['Biscuits', 'Chips', 'Chips & Snacks', 'Chocolates', 'Protein Bars', 'Drinks', 'Ice Cream'].includes(product.category);
 
-    if (nova <= 3) {
-      if (isInstant) penalties += 10;
-      if (isReadyToEat) penalties += 5;
-      if (isHighlyRefined) penalties += 10;
-      if (isFormulatedBase) penalties += 10;
-    } else {
-      if (isInstant) penalties += 10;
-      if (isReadyToEat) penalties += 2;
-      if (isHighlyRefined) penalties += 5;
-      if (isFormulatedBase) penalties += 10;
-    }
-    return Math.max(0, Math.min(100, novaBase - penalties));
+    if (isInstant) penalties += 10;
+    if (isHighlyRefined) penalties += 10;
+    if (isFormulatedBase) penalties += 10;
+    
+    return Math.max(0, Math.min(100, 100 - penalties));
   };
 
   const getAdditiveScore = (ageGroup: string) => {
@@ -357,29 +400,128 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
 
   let I = getIngredientScore();
   let P = getProcessingScore();
-  let scale = novaScale[product.nova || 4] || 0.50;
+  let nova = overrideNova !== undefined ? overrideNova : (product.nova || 4);
+  let scale = novaScale[nova] || 0.50;
+
+  // Track the adult dominant nutrient for the root response
+  let adultDominantNutrient: { key: string, dv: number, subScore: number } | undefined;
 
   const calculateFinalAgeScore = (ageGroup: string): AgeScore => {
-    let N = getNutritionScore(ageGroup);
+    let nutResult = getNutritionScore(ageGroup);
+    let N = nutResult.score;
     let A_age = getAdditiveScore(ageGroup);
-    let NGS_raw = 0.35 * N + 0.20 * I + 0.15 * P + 0.30 * A_age;
-    let NGS = Math.round(NGS_raw * scale);
-    return { score: Math.max(0, Math.min(100, NGS)), components: { N: Math.round(N), I: Math.round(I), P: Math.round(P), A: Math.round(A_age) }, ...getGradeAndColor(NGS) };
+    
+    if (ageGroup === 'adult') {
+      adultDominantNutrient = {
+        key: nutResult.worstKey,
+        dv: Math.round(nutResult.worstDV),
+        subScore: Math.round(nutResult.worstSubScore)
+      };
+    }
+
+    // Section 1: Decoupled Structure
+    let N_capped = nova === 4 ? Math.min(N, 50) : N;
+    let NGS_pre_cliff = scale * (0.20 * I + 0.15 * P + 0.30 * A_age) + 0.35 * N_capped;
+    
+    // Section 1a: Danger Cliff
+    let cliffPenalty = 0;
+    let pMap = nutResult.pMap;
+    if (ageGroup === 'child') {
+      if (pMap.totalSugar >= 150 || pMap.addedSugar >= 150 || pMap.sodium >= 150 || 
+          pMap.saturatedFat >= 150 || pMap.transFat >= 150 || pMap.caffeine >= 150) {
+        cliffPenalty = 10;
+      }
+    } else if (ageGroup === 'elderly') {
+      if (pMap.sodium >= 100 || pMap.caffeine >= 100) {
+        cliffPenalty = 10;
+      }
+    }
+
+    let NGS_final = Math.max(0, NGS_pre_cliff - cliffPenalty);
+    
+    // Section 14: Serving Reality Check
+    let servingRealityCheck: number | undefined;
+    if (product.serving_size) {
+      let servingVal = parseFloat(product.serving_size);
+      if (!isNaN(servingVal)) {
+         let worstNut = nutResult.worstKey;
+         let ref = referenceIntakes[ageGroup][worstNut];
+         let valPer100 = product.nutrition && product.nutrition[worstNut] !== undefined ? product.nutrition[worstNut] : 
+                        (worstNut === 'totalSugar' ? product.nutrition?.sugar || 0 : (worstNut === 'addedSugar' ? product.nutrition?.addedSugar || 0 : 0));
+         let valPerServing = (valPer100 / 100) * servingVal;
+         servingRealityCheck = Math.round((valPerServing / ref) * 100);
+      }
+    }
+
+    if (missingDataError) NGS_final = 0;
+
+    let res = { 
+      score: Math.max(0, Math.min(100, Math.round(NGS_final))), 
+      components: { N: Math.round(N), I: Math.round(I), P: Math.round(P), A: Math.round(A_age) }, 
+      serving_reality_check: servingRealityCheck,
+      ...getGradeAndColor(Math.round(NGS_final)) 
+    };
+    
+    return res;
   };
 
   const adultScore = calculateFinalAgeScore('adult');
   
   return {
-    overall: adultScore.score,
-    grade: adultScore.grade,
-    components: adultScore.components,
-    flags,
-    ageWise: {
-      child: calculateFinalAgeScore('child'),
-      teen: calculateFinalAgeScore('teen'),
-      adult: adultScore,
-      elderly: calculateFinalAgeScore('elderly')
-    }
+    scoreBreakdown: {
+      overall: adultScore.score,
+      grade: adultScore.grade,
+      components: adultScore.components,
+      flags,
+      dominantNutrient: adultDominantNutrient,
+      ageWise: {
+        child: calculateFinalAgeScore('child'),
+        teen: calculateFinalAgeScore('teen'),
+        adult: adultScore,
+        elderly: calculateFinalAgeScore('elderly')
+      }
+    },
+    missingDataError
   };
 };
 
+export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
+  let result = calculateInternalNGS(product);
+  let breakdown = result.scoreBreakdown;
+  let missing = result.missingDataError;
+
+  // If missing data, return immediately
+  if (missing) return breakdown;
+
+  // Section 9: Grading Displayed Precision (boundary_sensitive)
+  // Check if score % 10 is within 3 points of a boundary (e.g. 17, 18, 19, 20, 21, 22)
+  let rem = breakdown.overall % 10;
+  if (rem >= 7 || rem <= 2) {
+    if (!breakdown.flags) breakdown.flags = [];
+    breakdown.flags.push('boundary_sensitive');
+  }
+
+  // Section 1: Classification Sensitivity
+  // If changing NOVA by 1 changes the grade, flag it.
+  let currentNova = product.nova || 4;
+  if (currentNova > 1) {
+    let alternateResult = calculateInternalNGS(product, currentNova - 1);
+    if (alternateResult.scoreBreakdown.grade !== breakdown.grade) {
+      if (!breakdown.flags) breakdown.flags = [];
+      breakdown.flags.push('classification_sensitive');
+    }
+  } else if (currentNova === 1) {
+    let alternateResult = calculateInternalNGS(product, 2);
+    if (alternateResult.scoreBreakdown.grade !== breakdown.grade) {
+      if (!breakdown.flags) breakdown.flags = [];
+      breakdown.flags.push('classification_sensitive');
+    }
+  }
+
+  // Deduplicate flags
+  if (breakdown.flags) {
+    breakdown.flags = Array.from(new Set(breakdown.flags));
+  }
+
+  return breakdown;
+};
