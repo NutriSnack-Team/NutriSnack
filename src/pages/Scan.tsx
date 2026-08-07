@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
-  UploadBox, AgeScoreCard, NutritionCard, IngredientChip, 
+  UploadBox, AgeScoreCard, IngredientChip, 
   ScoreBreakdown, RecommendationCard, 
   ComparisonCard, CompareTable, AllergenBanner, ExplainabilityCard
 } from '@/components';
 import { useAppStore } from '@/store/useAppStore';
-import { Flame, Droplet, Activity, Hexagon, Factory, AlertTriangle, Shield, Info } from 'lucide-react';
+import { AlertTriangle, Shield, Info } from 'lucide-react';
 import { calculateNutriGuardScore, getGradeAndColor } from '@/utils';
 import type { ScoreBreakdown as ScoreBreakdownType } from '@/types';
 

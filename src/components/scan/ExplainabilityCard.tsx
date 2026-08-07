@@ -1,7 +1,6 @@
 import { Sparkles, ShieldCheck, Target, AlertTriangle, Scale, Quote, Shield } from 'lucide-react';
 import citationsData from '@/data/citations.json';
 import { getManufacturerCounterfactual } from '@/utils/counterfactual';
-import productsData from '@/data/products.json';
 
 interface ExplainabilityCardProps {
   product: any;

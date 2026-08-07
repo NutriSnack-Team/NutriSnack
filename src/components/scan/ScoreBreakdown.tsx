@@ -1,4 +1,4 @@
-import { Info, AlertTriangle, CheckCircle2, Factory, FlaskConical, Flame, Leaf } from 'lucide-react';
+import { Factory, FlaskConical, Flame, Leaf } from 'lucide-react';
 
 interface ScoreBreakdownProps {
   product: any;

@@ -1,4 +1,4 @@
-import { AlertTriangle, ChevronRight } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 
 interface AllergenBannerProps {
   allergens?: string[];
