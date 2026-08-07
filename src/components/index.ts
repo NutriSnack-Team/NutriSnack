@@ -13,3 +13,6 @@ export * from './scan/IngredientChip';
 export * from './scan/NutritionCard';
 export * from './scan/RecommendationCard';
 export * from './scan/UploadBox';
+export * from './scan/AllergenBanner';
+export * from './scan/ConfidenceGauge';
+export * from './scan/ExplainabilityCard';

@@ -11,6 +11,11 @@ export interface AgeScore {
     A: number | null;
   };
   serving_reality_check?: number;
+  dominantNutrient?: {
+    key: string;
+    dv: number;
+    subScore: number;
+  };
 }
 
 export interface ScoreBreakdown {

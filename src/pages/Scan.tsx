@@ -3,16 +3,39 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { 
   UploadBox, AgeScoreCard, NutritionCard, IngredientChip, 
   ScoreBreakdown, RecommendationCard, 
-  ComparisonCard, CompareTable 
+  ComparisonCard, CompareTable, AllergenBanner, ExplainabilityCard
 } from '@/components';
 import { useAppStore } from '@/store/useAppStore';
-import { Flame, Droplet, Activity, Hexagon, Factory, AlertTriangle } from 'lucide-react';
+import { Flame, Droplet, Activity, Hexagon, Factory, AlertTriangle, Shield, Info } from 'lucide-react';
 import { calculateNutriGuardScore, getGradeAndColor } from '@/utils';
 import type { ScoreBreakdown as ScoreBreakdownType } from '@/types';
 
 import productsData from '@/data/products.json';
 import ingredientsData from '@/data/ingredients.json';
 import additivesData from '@/data/additives.json';
+
+const getNegativeBadge = (nutrient: string, value: number) => {
+  let thresholdHigh = 0;
+  let thresholdMed = 0;
+  if (nutrient === 'Energy') { thresholdHigh = 400; thresholdMed = 150; }
+  else if (nutrient === 'Fat') { thresholdHigh = 17.5; thresholdMed = 3; }
+  else if (nutrient === 'Sugar') { thresholdHigh = 22.5; thresholdMed = 5; }
+  else if (nutrient === 'Sodium') { thresholdHigh = 600; thresholdMed = 120; }
+
+  if (value > thresholdHigh) return { label: 'HIGH', color: 'bg-[#d32f2f]' };
+  if (value > thresholdMed) return { label: 'MED', color: 'bg-orange-500' };
+  return { label: 'LOW', color: 'bg-green-600' };
+};
+
+const getPositiveBadge = (nutrient: string, value: number) => {
+  let thresholdGood = 0;
+  if (nutrient === 'Protein') thresholdGood = 5;
+  if (nutrient === 'Fiber') thresholdGood = 3;
+  if (nutrient === 'Calcium') thresholdGood = 10;
+
+  if (value >= thresholdGood) return { label: 'GOOD', color: 'bg-[#00a85a]' };
+  return { label: 'FAIR', color: 'bg-yellow-500' };
+};
 
 export function Scan() {
   const { id } = useParams();
@@ -27,6 +50,7 @@ export function Scan() {
   const [ingredients, setIngredients] = useState<any[]>([]);
   const [alternatives, setAlternatives] = useState<any[]>([]);
   const [recommendations, setRecommendations] = useState<any>(null);
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'child'|'teen'|'adult'|'elderly'>('child');
 
   useEffect(() => {
     if (activeId) {
@@ -143,167 +167,290 @@ export function Scan() {
 
   return (
     <div className="bg-gray-50/50 min-h-screen pb-24">
-      <div className="max-w-7xl mx-auto px-4 space-y-6">
+      <div className="max-w-7xl mx-auto">
+        <AllergenBanner allergens={product.allergens} flags={scoreData.flags} />
         
         {/* Row 1: Scanned Product (Left) | Age-Wise Scores (Right) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
           {/* Left: Scanned Product */}
-          <div className="lg:col-span-6 bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col p-6">
+          <div className="lg:col-span-6 bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row p-6 gap-6">
             
-            {/* Top Section */}
-            <div className="flex flex-col sm:flex-row gap-6 mb-5">
-               {/* Image Box */}
-               <div className="w-full sm:w-[180px] h-[180px] bg-white border border-gray-100 rounded-2xl flex items-center justify-center p-3 shrink-0 shadow-sm">
-                 <img src={`/${product.image}`} alt={product.name} className="max-w-full max-h-full object-contain mix-blend-multiply drop-shadow-sm" />
-               </div>
-               
-               {/* Details */}
-               <div className="flex flex-col justify-center">
-                 <h3 className="text-2xl font-extrabold text-gray-900 leading-tight mb-1.5">{product.name}</h3>
-                 <p className="text-sm text-gray-500 mb-3">{product.brand}</p>
-                 
-                 {/* Category Tags */}
-                 <div className="flex flex-wrap gap-2 mb-4">
-                   <span className="px-3 py-1 bg-orange-50 text-orange-600 text-[11px] font-bold rounded-lg">{product.category}</span>
-                   <span className="px-3 py-1 bg-orange-50 text-orange-600 text-[11px] font-bold rounded-lg">Packaged Food</span>
-                 </div>
-                 
-                 {/* Price */}
-                 <div className="mt-auto">
-                   <div className="text-2xl font-bold text-gray-900 leading-none mb-1">₹{product.price}</div>
-                   <div className="text-[11px] text-gray-400 font-medium">MRP (Incl. of all taxes)</div>
-                 </div>
-               </div>
+            {/* Left Side: Image Box */}
+            <div className="w-24 sm:w-32 md:w-40 rounded-xl flex items-center justify-center shrink-0 self-stretch">
+               <img src={`/${product.image}`} alt={product.name} className="max-w-full max-h-full object-contain mix-blend-multiply" />
             </div>
-            {/* Quick Facts Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mt-auto">
+
+            {/* Right Side: Details & Grid */}
+            <div className="flex flex-col flex-1">
+               {/* Details */}
+               <h3 className="text-3xl font-extrabold text-slate-900 leading-tight mb-1">{product.name}</h3>
+               <p className="text-sm text-slate-500 mb-4">{product.category}</p>
                
-               {/* Fact 1: Net Weight */}
-               <div className="border border-gray-100 rounded-xl p-2.5 flex flex-col items-center justify-center bg-white shadow-sm hover:shadow-md transition-shadow">
-                 <div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center mb-2 shrink-0">
-                   {/* Purse/Weight icon from screenshot */}
-                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h21v11a2 2 0 0 1-2 2h-1v-1"/><path d="M16 16H8"/><path d="M12 12v4"/><circle cx="12" cy="8" r="4"/></svg>
-                 </div>
-                 <span className="text-[9px] text-gray-500 font-medium mb-1 whitespace-nowrap">Net Weight</span>
-                 <div className="w-full border-t border-dashed border-gray-200 my-0.5"></div>
-                 <span className="text-[13px] font-bold text-gray-900 mt-1">{product.net_weight}</span>
+               {/* Category Tags */}
+               <div className="flex flex-wrap gap-2 mb-6">
+                 <span className="px-3 py-1 bg-green-50 text-green-700 text-xs font-semibold rounded-full flex items-center gap-1.5 border border-green-100">
+                   <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                   {product.category}
+                 </span>
+                 <span className="px-3 py-1 bg-orange-50 text-orange-700 text-xs font-semibold rounded-full flex items-center gap-1.5 border border-orange-100">
+                   <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+                   Packaged Food
+                 </span>
+               </div>
+               
+               {/* Price */}
+               <div className="mb-6">
+                 <div className="text-3xl font-extrabold text-slate-900 leading-none mb-1.5">₹{product.price}</div>
+                 <div className="text-[11px] text-slate-400 font-medium">MRP (Incl. of all taxes)</div>
                </div>
 
-               {/* Fact 2: Serving Size */}
-               <div className="border border-gray-100 rounded-xl p-2.5 flex flex-col items-center justify-center bg-white shadow-sm hover:shadow-md transition-shadow">
-                 <div className="w-10 h-10 rounded-full bg-green-50 text-green-500 flex items-center justify-center mb-2 shrink-0">
-                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-                 </div>
-                 <span className="text-[9px] text-gray-500 font-medium mb-1 whitespace-nowrap">Serving Size</span>
-                 <div className="w-full border-t border-dashed border-gray-200 my-0.5"></div>
-                 <span className="text-[13px] font-bold text-gray-900 mt-1">{product.serving_size}</span>
+               {/* Quick Facts Grid 3x2 */}
+               <div className="border border-slate-100 rounded-xl overflow-hidden shadow-sm mt-auto text-left">
+                  {/* Row 1 */}
+                  <div className="grid grid-cols-2 border-b border-slate-100 bg-slate-50/30">
+                     {/* Net Weight */}
+                     <div className="flex items-center p-3 gap-3 border-r border-slate-100">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0">
+                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h21v11a2 2 0 0 1-2 2h-1v-1"/><path d="M16 16H8"/><path d="M12 12v4"/><circle cx="12" cy="8" r="4"/></svg>
+                        </div>
+                        <div className="flex flex-col">
+                           <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">Net Weight</span>
+                           <span className="text-sm font-bold text-slate-900 leading-none">{product.net_weight}</span>
+                        </div>
+                     </div>
+                     {/* Serving Size */}
+                     <div className="flex items-center p-3 gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-green-50 text-green-500 flex items-center justify-center shrink-0">
+                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                        </div>
+                        <div className="flex flex-col">
+                           <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">Serving Size</span>
+                           <span className="text-sm font-bold text-slate-900 leading-none">{product.serving_size}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* Row 2 */}
+                  <div className="grid grid-cols-2 border-b border-slate-100 bg-white">
+                     {/* Ingredients */}
+                     <div className="flex items-center p-3 gap-3 border-r border-slate-100">
+                        <div className="w-8 h-8 rounded-lg bg-pink-50 text-pink-500 flex items-center justify-center shrink-0">
+                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                        </div>
+                        <div className="flex flex-col">
+                           <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">Ingredients</span>
+                           <span className="text-sm font-bold text-slate-900 leading-none">{product.ingredients.length}</span>
+                        </div>
+                     </div>
+                     {/* Additives */}
+                     <div className="flex items-center p-3 gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><line x1="5.52" y1="16" x2="18.48" y2="16"/></svg>
+                        </div>
+                        <div className="flex flex-col">
+                           <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">Additives</span>
+                           <span className="text-sm font-bold text-slate-900 leading-none">{product.additives.length}</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* Row 3 */}
+                  <div className="grid grid-cols-2 bg-slate-50/30">
+                     {/* NOVA */}
+                     <div className="flex items-center p-3 gap-3 border-r border-slate-100">
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                           <div className="relative flex items-center justify-center">
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3b82f6"><path d="M12 2l3.09 1.62 3.46-.48 1.48 3.17 2.91 1.9L21.32 12l1.62 3.79-2.91 1.9-1.48 3.17-3.46-.48L12 22l-3.09-1.62-3.46.48-1.48-3.17-2.91-1.9L2.68 12l-1.62-3.79 2.91-1.9 1.48-3.17 3.46.48L12 2z"/></svg>
+                              <span className="absolute text-[5px] font-bold text-white tracking-widest mt-0.5">NOVA</span>
+                           </div>
+                        </div>
+                        <div className="flex flex-col">
+                           <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">NOVA Level</span>
+                           <span className="text-sm font-bold text-slate-900 leading-none flex flex-col sm:flex-row sm:gap-1">
+                             {product.nova}
+                             <span className="text-[9px] text-blue-500 font-semibold self-start sm:self-end">({product.nova === 4 ? 'Ultra Processed' : 'Processed'})</span>
+                           </span>
+                        </div>
+                     </div>
+                     {/* Form */}
+                     <div className="flex items-center p-3 gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                        </div>
+                        <div className="flex flex-col">
+                           <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">Form</span>
+                           <span className="text-sm font-bold text-slate-900 leading-none capitalize">{product.form || 'Solid'}</span>
+                        </div>
+                     </div>
+                  </div>
                </div>
 
-               {/* Fact 3: Ingredients */}
-               <div className="border border-gray-100 rounded-xl p-2.5 flex flex-col items-center justify-center bg-white shadow-sm hover:shadow-md transition-shadow">
-                 <div className="w-10 h-10 rounded-full bg-pink-50 text-pink-500 flex items-center justify-center mb-2 shrink-0">
-                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                 </div>
-                 <span className="text-[9px] text-gray-500 font-medium mb-1 whitespace-nowrap">Ingredients</span>
-                 <div className="w-full border-t border-dashed border-gray-200 my-0.5"></div>
-                 <span className="text-[13px] font-bold text-gray-900 mt-1">{product.ingredients.length}</span>
-               </div>
-
-               {/* Fact 4: Additives */}
-               <div className="border border-gray-100 rounded-xl p-2.5 flex flex-col items-center justify-center bg-white shadow-sm hover:shadow-md transition-shadow">
-                 <div className="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center mb-2 shrink-0">
-                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><line x1="5.52" y1="16" x2="18.48" y2="16"/></svg>
-                 </div>
-                 <span className="text-[9px] text-gray-500 font-medium mb-1 whitespace-nowrap">Additives</span>
-                 <div className="w-full border-t border-dashed border-gray-200 my-0.5"></div>
-                 <span className="text-[13px] font-bold text-gray-900 mt-1">{product.additives.length}</span>
-               </div>
-
-               {/* Fact 5: NOVA Level */}
-               <div className="border border-gray-100 rounded-xl p-2.5 flex flex-col items-center justify-center bg-white shadow-sm hover:shadow-md transition-shadow">
-                 <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-2 shrink-0">
-                   <div className="relative flex items-center justify-center">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="#3b82f6"><path d="M12 2l3.09 1.62 3.46-.48 1.48 3.17 2.91 1.9L21.32 12l1.62 3.79-2.91 1.9-1.48 3.17-3.46-.48L12 22l-3.09-1.62-3.46.48-1.48-3.17-2.91-1.9L2.68 12l-1.62-3.79 2.91-1.9 1.48-3.17 3.46.48L12 2z"/></svg>
-                      <span className="absolute text-[6px] font-bold text-white tracking-widest mt-0.5">NOVA</span>
-                   </div>
-                 </div>
-                 <span className="text-[9px] text-gray-500 font-medium mb-1 whitespace-nowrap">NOVA Level</span>
-                 <div className="w-full border-t border-dashed border-gray-200 my-0.5"></div>
-                 <div className="flex flex-col items-center mt-1">
-                   <span className="text-[13px] font-bold text-gray-900 leading-none mb-0.5">{product.nova}</span>
-                   <span className="text-[6px] text-blue-500 font-bold tracking-tight">({product.nova === 4 ? 'Ultra Processed' : 'Processed'})</span>
-                 </div>
-               </div>
             </div>
           </div>
 
           {/* Right: Age-Wise NutriGuard Scores */}
           <div className="lg:col-span-6 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                <span className="p-1.5 bg-purple-100 text-purple-600 rounded"><Activity className="w-4 h-4"/></span>
-                Age-Wise NutriGuard Scores
-              </h3>
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="bg-purple-100 p-2.5 rounded-xl shadow-sm">
+                  <Shield className="w-5 h-5 text-purple-600" />
+                </div>
+                <div className="flex flex-col">
+                  <h3 className="text-xl font-bold text-slate-800 leading-tight">Age-Wise NutriGuard Scores</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">Lower score means higher risk. Compare for your age.</p>
+                </div>
+              </div>
+              <button className="text-slate-400 hover:text-slate-600 transition-colors">
+                <Info className="w-5 h-5" />
+              </button>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-1">
-              <AgeScoreCard ageGroup="Child" ageRange="4-12 yrs" {...scoreData.ageWise.child} />
-              <AgeScoreCard ageGroup="Teen" ageRange="13-18 yrs" {...scoreData.ageWise.teen} />
-              <AgeScoreCard ageGroup="Adult" ageRange="19-59 yrs" {...scoreData.ageWise.adult} />
-              <AgeScoreCard ageGroup="Elderly" ageRange="60+ yrs" {...scoreData.ageWise.elderly} />
+              <AgeScoreCard ageGroup="Child" ageRange="4-12 yrs" {...scoreData.ageWise.child} isSelected={selectedAgeGroup === 'child'} onClick={() => setSelectedAgeGroup('child')} />
+              <AgeScoreCard ageGroup="Teen" ageRange="13-18 yrs" {...scoreData.ageWise.teen} isSelected={selectedAgeGroup === 'teen'} onClick={() => setSelectedAgeGroup('teen')} />
+              <AgeScoreCard ageGroup="Adult" ageRange="19-59 yrs" {...scoreData.ageWise.adult} isSelected={selectedAgeGroup === 'adult'} onClick={() => setSelectedAgeGroup('adult')} />
+              <AgeScoreCard ageGroup="Elderly" ageRange="60+ yrs" {...scoreData.ageWise.elderly} isSelected={selectedAgeGroup === 'elderly'} onClick={() => setSelectedAgeGroup('elderly')} />
             </div>
           </div>
         </div>
 
-        {/* Row 2: Nutrition Grid (Left) | Ingredient Analysis (Right) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
-          <div className="lg:col-span-5 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h3 className="font-semibold text-gray-900 mb-6 flex items-center gap-2">
-              <span className="p-1.5 bg-blue-100 text-blue-600 rounded"><Activity className="w-4 h-4"/></span>
-              Product Details & Nutrition <span className="text-xs text-gray-400 font-normal ml-2">(Per 100g)</span>
-            </h3>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-              <NutritionCard icon={Flame} label="Energy" value={product.nutrition.calories} unit="kcal" color="text-blue-500" />
-              <NutritionCard icon={Droplet} label="Total Fat" value={product.nutrition.fat} unit="g" color="text-blue-500" />
-              <NutritionCard icon={Hexagon} label="Saturated Fat" value={product.nutrition.saturatedFat} unit="g" color="text-red-500" />
-              
-              {/* Mock fields for missing data to fill grid of 12 */}
-              <NutritionCard icon={Activity} label="Trans Fat" value={0} unit="g" color="text-green-500" />
-              <NutritionCard icon={Activity} label="Cholesterol" value={0} unit="mg" color="text-blue-500" />
-              
-              <NutritionCard icon={Activity} label="Sodium" value={product.nutrition.sodium} unit="mg" color="text-orange-500" />
-              
-              <NutritionCard icon={Activity} label="Total Carbs" value={53} unit="g" color="text-blue-500" />
-              <NutritionCard icon={Activity} label="Dietary Fiber" value={product.nutrition.fiber} unit="g" color="text-green-500" />
-              
-              <NutritionCard icon={Activity} label="Total Sugar" value={product.nutrition.sugar} unit="g" color="text-orange-500" />
-              <NutritionCard icon={Activity} label="Added Sugar" value={product.nutrition.sugar} unit="g" color="text-red-500" />
-              <NutritionCard icon={Activity} label="Protein" value={product.nutrition.protein} unit="g" color="text-green-500" />
-              <NutritionCard icon={Activity} label="Calcium" value={15} unit="mg" color="text-blue-500" />
-            </div>
-            <p className="text-xs text-gray-400 mt-4">*Approximate values extracted from nutrition label.</p>
-          </div>
+        <ExplainabilityCard product={product} breakdown={scoreData} ageGroup={selectedAgeGroup} />
 
-          <div className="lg:col-span-7 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col h-full">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                <span className="p-1.5 bg-purple-100 text-purple-600 rounded"><Factory className="w-4 h-4"/></span>
-                Ingredient Analysis
-              </h3>
-              <div className="flex gap-4 text-xs font-medium text-gray-600">
-                 <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-green-500"></div> Good</span>
-                 <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-yellow-400"></div> Neutral</span>
-                 <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-orange-500"></div> Concern</span>
-                 <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-red-500"></div> Bad</span>
+        {/* Row 2: Nutrition Grid (Left) | Ingredient Analysis (Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <div className="lg:col-span-5 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col">
+            <h3 className="font-bold text-gray-900 mb-6 text-lg tracking-tight uppercase flex items-center">
+              Product Nutrition <span className="text-sm text-gray-400 font-normal normal-case ml-2">(Per 100g)</span>
+            </h3>
+            
+            {/* Negative block */}
+            <div className="mb-6">
+              <div className="text-xs font-bold text-red-600 mb-3 border-b border-gray-100 pb-2">
+                NEGATIVE <span className="font-semibold text-red-500">(LIMIT CONSUMPTION)</span>
+              </div>
+              <div className="bg-red-50/40 rounded-xl overflow-hidden flex flex-col gap-[2px]">
+                <div className="flex items-center justify-between p-3 sm:px-4 bg-red-50/60">
+                  <span className="text-sm font-semibold text-gray-800">Energy</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-gray-900">{product.nutrition.calories} <span className="text-xs text-gray-500 font-medium">kcal</span></span>
+                    {(() => {
+                      const badge = getNegativeBadge('Energy', product.nutrition.calories);
+                      return <span className={`px-2 py-0.5 ${badge.color} text-white text-[10px] font-bold rounded`}>{badge.label}</span>;
+                    })()}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 sm:px-4 bg-red-50/60">
+                  <span className="text-sm font-semibold text-gray-800">Total Fat</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-gray-900">{product.nutrition.fat} <span className="text-xs text-gray-500 font-medium">g</span></span>
+                    {(() => {
+                      const badge = getNegativeBadge('Fat', product.nutrition.fat);
+                      return <span className={`px-2 py-0.5 ${badge.color} text-white text-[10px] font-bold rounded`}>{badge.label}</span>;
+                    })()}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 sm:px-4 bg-red-50/60">
+                  <span className="text-sm font-semibold text-gray-800">Total Sugar</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-gray-900">{product.nutrition.sugar} <span className="text-xs text-gray-500 font-medium">g</span></span>
+                    {(() => {
+                      const badge = getNegativeBadge('Sugar', product.nutrition.sugar);
+                      return <span className={`px-2 py-0.5 ${badge.color} text-white text-[10px] font-bold rounded`}>{badge.label}</span>;
+                    })()}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 sm:px-4 bg-red-50/60">
+                  <span className="text-sm font-semibold text-gray-800">Sodium</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-gray-900">{product.nutrition.sodium} <span className="text-xs text-gray-500 font-medium">mg</span></span>
+                    {(() => {
+                      const badge = getNegativeBadge('Sodium', product.nutrition.sodium);
+                      return <span className={`px-2 py-0.5 ${badge.color} text-white text-[10px] font-bold rounded`}>{badge.label}</span>;
+                    })()}
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto pr-2 max-h-[400px]">
+
+            {/* Positive block */}
+            <div>
+              <div className="text-xs font-bold text-green-600 mb-3 border-b border-gray-100 pb-2">
+                POSITIVE <span className="font-semibold text-green-500">(GOOD FOR YOU)</span>
+              </div>
+              <div className="bg-green-50/40 rounded-xl overflow-hidden flex flex-col gap-[2px]">
+                <div className="flex items-center justify-between p-3 sm:px-4 bg-green-50/60">
+                  <span className="text-sm font-semibold text-gray-800">Protein</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-gray-900">{product.nutrition.protein} <span className="text-xs text-gray-500 font-medium">g</span></span>
+                    {(() => {
+                      const badge = getPositiveBadge('Protein', product.nutrition.protein);
+                      return <span className={`px-2 py-0.5 ${badge.color} text-white text-[10px] font-bold rounded`}>{badge.label}</span>;
+                    })()}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 sm:px-4 bg-green-50/60">
+                  <span className="text-sm font-semibold text-gray-800">Dietary Fiber</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-gray-900">{product.nutrition.fiber} <span className="text-xs text-gray-500 font-medium">g</span></span>
+                    {(() => {
+                      const badge = getPositiveBadge('Fiber', product.nutrition.fiber);
+                      return <span className={`px-2 py-0.5 ${badge.color} text-white text-[10px] font-bold rounded`}>{badge.label}</span>;
+                    })()}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 sm:px-4 bg-green-50/60">
+                  <span className="text-sm font-semibold text-gray-800">Calcium</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-gray-900">15 <span className="text-xs text-gray-500 font-medium">mg</span></span>
+                    {(() => {
+                      const badge = getPositiveBadge('Calcium', 15);
+                      return <span className={`px-2 py-0.5 ${badge.color} text-white text-[10px] font-bold rounded`}>{badge.label}</span>;
+                    })()}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-400 mt-8">* Approximate values extracted from nutrition label.</p>
+          </div>
+
+          <div className="lg:col-span-7 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col max-h-[622px]">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-bold text-gray-900 text-lg tracking-tight uppercase">
+                Ingredient Analysis
+              </h3>
+              <div className="flex gap-4 text-[11px] font-bold text-gray-600">
+                 <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-green-500"></div> Good</span>
+                 <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-orange-400"></div> Neutral</span>
+                 <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-red-500"></div> Concern</span>
+              </div>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto pr-2 min-h-0 custom-scrollbar">
               {ingredients.map(ing => (
                 <IngredientChip key={ing.id} {...ing} />
               ))}
             </div>
            
+            <div className="mt-6 pt-4 border-t border-gray-100 grid grid-cols-4 divide-x divide-gray-100 text-center">
+               <div className="flex flex-col">
+                  <span className="text-xs font-medium text-gray-500 mb-1">Total Ingredients</span>
+                  <span className="text-xl font-bold text-gray-900">{ingredients.length}</span>
+               </div>
+               <div className="flex flex-col">
+                  <span className="text-xs font-bold text-green-600 mb-1">Positives</span>
+                  <span className="text-xl font-bold text-green-600">{ingredients.filter(i => i.status === 'good').length}</span>
+               </div>
+               <div className="flex flex-col">
+                  <span className="text-xs font-bold text-orange-400 mb-1">Neutrals</span>
+                  <span className="text-xl font-bold text-orange-400">{ingredients.filter(i => i.status === 'neutral').length}</span>
+               </div>
+               <div className="flex flex-col">
+                  <span className="text-xs font-bold text-red-500 mb-1">Concerns</span>
+                  <span className="text-xl font-bold text-red-500">{ingredients.filter(i => i.status === 'concern' || i.status === 'bad').length}</span>
+               </div>
+            </div>
           </div>
 
         </div>

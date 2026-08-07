@@ -197,32 +197,21 @@ export function CompareTable({ currentProduct, alternatives }: CompareTableProps
                 )}
                 {item ? (
                   <>
-                    <div className="flex items-start justify-center gap-3 mb-4 w-full relative">
+                    <div className="items-center justify-center ">
                       {!item.isCurrent && (
                         <button 
                           onClick={() => handleRemoveProduct(idx - 1)}
-                          className="absolute -top-3 -right-3 text-[10px] text-gray-400 hover:text-red-500 font-bold flex items-center justify-center bg-gray-50 hover:bg-red-50 rounded-full w-6 h-6 transition-colors border border-gray-200 hover:border-red-200"
+                          className="absolute top-0 right-0 text-[10px] text-gray-400 hover:text-red-500 font-bold flex items-center justify-center bg-gray-50 hover:bg-red-50 rounded-full w-6 h-6 transition-colors border border-gray-200 hover:border-red-200 z-10"
                         >
                           <X className="w-3 h-3" strokeWidth={3} />
                         </button>
                       )}
-                      <div className="w-16 h-20 shrink-0 flex items-center justify-center p-1">
+                      <Link to={`/product/${item.id}`} className="w-32 h-40 shrink-0 flex items-center justify-center p-2 hover:scale-105 transition-transform duration-200">
                         {item.image ? (
-                          <img src={`/${item.image}`} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply drop-shadow-sm" />
+                          <img src={`/${item.image}`} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply drop-shadow-md" />
                         ) : (
                           <div className="text-xs text-gray-400">No Image</div>
                         )}
-                      </div>
-                      <Link to={`/product/${item.id}`} className="text-left flex-1 pt-1 hover:opacity-80">
-                        <h4 className="font-bold text-gray-900 text-sm leading-tight flex items-start gap-1">
-                          {idx + 1}. {item.name}
-                        </h4>
-                        <p className="text-xs text-gray-500 mt-0.5">{item.brand}</p>
-                        <div className="mt-1 flex items-center gap-1">
-                          <span className={`w-3 h-3 rounded-sm border ${item.veg ? 'border-green-600 bg-white flex items-center justify-center' : 'border-red-600 bg-white flex items-center justify-center'}`}>
-                             <div className={`w-1.5 h-1.5 rounded-full ${item.veg ? 'bg-green-600' : 'bg-red-600'}`}></div>
-                          </span>
-                        </div>
                       </Link>
                     </div>
                     

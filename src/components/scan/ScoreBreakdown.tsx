@@ -1,5 +1,4 @@
-import { Info, AlertTriangle, CheckCircle2, Factory, FlaskConical, Flame, Leaf, ChevronDown, ChevronUp } from 'lucide-react';
-import { useState } from 'react';
+import { Info, AlertTriangle, CheckCircle2, Factory, FlaskConical, Flame, Leaf } from 'lucide-react';
 
 interface ScoreBreakdownProps {
   product: any;
@@ -7,8 +6,6 @@ interface ScoreBreakdownProps {
 }
 
 export function ScoreBreakdown({ product, scoreData }: ScoreBreakdownProps) {
-  const [expandedSection, setExpandedSection] = useState<string | null>('Nutrition');
-
   const comp = scoreData.components;
   const isProv = comp.A === null;
   const wN = isProv ? 0.41 : 0.35;
@@ -21,150 +18,136 @@ export function ScoreBreakdown({ product, scoreData }: ScoreBreakdownProps) {
   const valP = (comp.P * wP).toFixed(1);
   const valA = isProv ? '0.0' : (comp.A! * wA).toFixed(1);
 
-  const toggleSection = (section: string) => {
-    setExpandedSection(prev => prev === section ? null : section);
-  };
-
-  // --- Dynamic Reasons Generation ---
-  
-  const getNutritionReasons = () => {
-    const reasons = [];
-    const nut = product.nutrition;
-    if (nut.sodium > 400) reasons.push({ type: 'warn', text: `High Sodium (${nut.sodium}mg)` });
-    if (nut.sugar > 15) reasons.push({ type: 'warn', text: `High Added Sugar (${nut.sugar}g)` });
-    if (nut.saturatedFat > 5) reasons.push({ type: 'warn', text: `High Saturated Fat (${nut.saturatedFat}g)` });
-    if (nut.calories > 400) reasons.push({ type: 'warn', text: `Calorie Dense (${nut.calories}kcal)` });
-    
-    if (nut.protein > 8) reasons.push({ type: 'good', text: `Good Source of Protein (${nut.protein}g)` });
-    if (nut.fiber > 5) reasons.push({ type: 'good', text: `High Fiber (${nut.fiber}g)` });
-    
-    if (reasons.length === 0) reasons.push({ type: 'neutral', text: 'Balanced nutritional profile.' });
-    return reasons;
-  };
-
-  const getIngredientReasons = () => {
-    const reasons = [];
-    if (scoreData.flags?.includes('sugar_split')) {
-      reasons.push({ type: 'warn', text: 'Sugar Splitting Detected (-10 pts penalty)' });
-    }
-    if (product.ingredients && product.ingredients.length > 15) {
-      reasons.push({ type: 'warn', text: `Complex ingredient list (${product.ingredients.length} items)` });
-    }
-    if (comp.I > 80) reasons.push({ type: 'good', text: 'High quality whole-food ingredients.' });
-    else if (comp.I < 40) reasons.push({ type: 'warn', text: 'Contains refined or poor quality ingredients.' });
-    
-    if (reasons.length === 0) reasons.push({ type: 'neutral', text: 'Standard ingredients used.' });
-    return reasons;
-  };
-
-  const getProcessingReasons = () => {
-    const reasons = [];
-    const n = product.nova;
-    if (n === 4) reasons.push({ type: 'warn', text: 'Ultra-Processed Food (Severe NOVA Penalty)' });
-    else if (n === 3) reasons.push({ type: 'warn', text: 'Processed Food (Moderate NOVA Penalty)' });
-    else if (n === 2) reasons.push({ type: 'neutral', text: 'Processed Culinary Ingredient' });
-    else if (n === 1) reasons.push({ type: 'good', text: 'Unprocessed or Minimally Processed (No Penalty)' });
-    return reasons;
-  };
-
-  const getAdditiveReasons = () => {
-    const reasons = [];
-    if (isProv) {
-      reasons.push({ type: 'neutral', text: 'No additive data available. Score re-weighted.' });
-      return reasons;
-    }
-    const adds = product.additives || [];
-    if (adds.length > 5) reasons.push({ type: 'warn', text: `High number of additives (${adds.length})` });
-    else if (adds.length === 0) reasons.push({ type: 'good', text: 'No artificial additives detected.' });
-    
-    if (comp.A !== null && comp.A < 50) reasons.push({ type: 'warn', text: 'High-risk or controversial E-numbers detected.' });
-    
-    if (reasons.length === 0) reasons.push({ type: 'neutral', text: 'Additives are within safe limits.' });
-    return reasons;
+  // Helper for dynamic pill and progress color
+  const getPill = (valStr: string, maxStr: string) => {
+    const score = parseFloat(valStr);
+    const max = parseFloat(maxStr);
+    const ratio = max > 0 ? score / max : 0;
+    if (ratio >= 0.8) return { bg: 'bg-green-50 text-green-700', progress: 'bg-[#00a85a]', text: 'HIGH' };
+    if (ratio >= 0.4) return { bg: 'bg-orange-50 text-orange-600', progress: 'bg-orange-500', text: 'NEUTRAL' };
+    return { bg: 'bg-red-50 text-[#d32f2f]', progress: 'bg-[#d32f2f]', text: 'LOW' };
   };
 
   const sections = [
-    { id: 'Nutrition', title: 'Nutrition Pillar', weight: `${(wN * 100).toFixed(0)}%`, score: valN, max: (wN * 100).toFixed(1), icon: Flame, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100', reasons: getNutritionReasons() },
-    { id: 'Ingredients', title: 'Ingredients Pillar', weight: `${(wI * 100).toFixed(0)}%`, score: valI, max: (wI * 100).toFixed(1), icon: Leaf, color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-100', reasons: getIngredientReasons() },
-    { id: 'Processing', title: 'Processing Pillar', weight: `${(wP * 100).toFixed(0)}%`, score: valP, max: (wP * 100).toFixed(1), icon: Factory, color: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-100', reasons: getProcessingReasons() },
-    { id: 'Additives', title: 'Additives Pillar', weight: `${(wA * 100).toFixed(0)}%`, score: valA, max: (wA * 100).toFixed(1), icon: FlaskConical, color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-100', reasons: getAdditiveReasons() }
+    { 
+      id: 'Nutrition', title: 'Nutrition Pillar', weight: `${(wN * 100).toFixed(0)}%`, 
+      score: valN, max: (wN * 100).toFixed(1), icon: Flame, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100', 
+      desc: product.nutrition.sugar > 15 || product.nutrition.sodium > 400 ? 'High in saturated fat, sugar, and sodium.' : 'Balanced nutritional profile.' 
+    },
+    { 
+      id: 'Ingredients', title: 'Ingredients Pillar', weight: `${(wI * 100).toFixed(0)}%`, 
+      score: valI, max: (wI * 100).toFixed(1), icon: Leaf, color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-100', 
+      desc: comp.I > 80 ? 'High quality ingredients.' : 'Some refined ingredients and added sugar.' 
+    },
+    { 
+      id: 'Processing', title: 'Processing Pillar', weight: `${(wP * 100).toFixed(0)}%`, 
+      score: valP, max: (wP * 100).toFixed(1), icon: Factory, color: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-100', 
+      desc: product.nova > 3 ? 'Ultra-processed level.' : 'Moderate processing level.' 
+    },
+    { 
+      id: 'Additives', title: 'Additives Pillar', weight: `${(wA * 100).toFixed(0)}%`, 
+      score: valA, max: (wA * 100).toFixed(1), icon: FlaskConical, color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-100', 
+      desc: comp.A && comp.A > 80 ? 'No harmful additives.' : 'Contains permissible additives in moderate amounts.' 
+    }
   ];
 
+  const overallGrade = scoreData.ageWise?.child?.grade || scoreData.overallGrade || "C-"; // Fallback to C- if missing
+
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+    <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
+      
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-50">
         <div>
-          <h3 className="font-semibold text-gray-900 flex items-center gap-2 text-lg">
+          <h3 className="font-bold text-gray-900 text-xl">
             Detailed Score Breakdown
           </h3>
-          <p className="text-sm text-gray-500 mt-1">Discover exactly why this product received its final grade.</p>
+          <p className="text-sm text-gray-500 mt-1">How this product's NutriGuard Score is calculated</p>
         </div>
-        <div className="text-right">
-          <div className="text-3xl font-bold text-gray-900 leading-none">{scoreData.overall}</div>
-          <div className="text-xs text-gray-500 font-medium uppercase tracking-wider mt-1">Final Score</div>
+        
+        <div className="flex items-center gap-6">
+           <div className="flex flex-col items-end">
+              <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Final Score</span>
+              <span className="px-3 py-1 bg-orange-50 text-orange-700 text-xs font-bold rounded-full">Grade {overallGrade}</span>
+           </div>
+           
+           <div className="relative w-16 h-16 rounded-full border-4 border-orange-100 flex items-center justify-center">
+              <div className="absolute top-0 right-0 w-full h-full rounded-full border-4 border-orange-500 border-t-transparent border-l-transparent rotate-45"></div>
+              <div className="flex flex-col items-center z-10">
+                 <span className="text-2xl font-bold text-orange-600 leading-none">{scoreData.overall}</span>
+                 <span className="text-[9px] text-gray-500 font-bold mt-0.5">/ 100</span>
+              </div>
+           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        {sections.map(sec => (
-          <div key={sec.id} className={`border rounded-xl overflow-hidden transition-all duration-200 ${expandedSection === sec.id ? 'ring-2 ring-gray-100 border-transparent shadow-sm' : 'border-gray-200'}`}>
-            <button 
-              onClick={() => toggleSection(sec.id)}
-              className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${sec.bg} ${sec.color}`}>
-                  <sec.icon className="w-5 h-5" />
-                </div>
-                <div className="text-left">
-                  <h4 className="font-bold text-gray-900">{sec.title}</h4>
-                  <span className="text-xs text-gray-500 font-medium">Weight: {sec.weight}</span>
-                </div>
+      {/* Grid of 4 Pillars */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {sections.map(sec => {
+          const pill = getPill(sec.score, sec.max);
+          const ratio = (parseFloat(sec.score) / parseFloat(sec.max)) * 100;
+
+          return (
+            <div key={sec.id} className="border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col h-full bg-white">
+              <div className="flex items-start gap-3 mb-6">
+                 <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${sec.bg} ${sec.color}`}>
+                   <sec.icon className="w-5 h-5" />
+                 </div>
+                 <div>
+                    <h4 className="font-bold text-gray-900 text-sm">{sec.title}</h4>
+                    <span className="text-[11px] text-gray-500 font-medium">Weight: {sec.weight}</span>
+                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <div className="font-bold text-gray-900">{sec.score} <span className="text-gray-400 font-normal text-sm">/ {sec.max}</span></div>
-                </div>
-                {expandedSection === sec.id ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+
+              <div className="mt-auto">
+                 <div className="flex items-baseline justify-end gap-1 mb-2">
+                    <span className="text-xl font-bold text-gray-900">{sec.score}</span>
+                    <span className="text-sm font-medium text-gray-400">/ {sec.max}</span>
+                 </div>
+
+                 <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden mb-4">
+                    <div className={`h-full rounded-full ${pill.progress}`} style={{ width: `${ratio}%` }}></div>
+                 </div>
+
+                 <div className="flex flex-col items-start gap-2">
+                    <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${pill.bg}`}>
+                      {pill.text}
+                    </span>
+                    <p className="text-xs text-gray-600 leading-relaxed">
+                      {sec.desc}
+                    </p>
+                 </div>
               </div>
-            </button>
-            
-            {expandedSection === sec.id && (
-              <div className="px-4 pb-4 bg-gray-50/50 border-t border-gray-100">
-                <div className="pt-3">
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Key Factors</p>
-                  <div className="flex flex-col gap-2">
-                    {sec.reasons.map((r, i) => (
-                      <div key={i} className="flex items-start gap-2.5">
-                        {r.type === 'warn' && <AlertTriangle className="w-4 h-4 text-orange-500 shrink-0 mt-0.5" />}
-                        {r.type === 'good' && <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />}
-                        {r.type === 'neutral' && <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />}
-                        <span className={`text-sm ${r.type === 'warn' ? 'text-gray-800 font-medium' : 'text-gray-600'}`}>
-                          {r.text}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
       
-      {/* Structural Penalty */}
-      <div className="mt-6 p-4 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-between">
-         <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
-               <span className="text-[8px] font-bold text-indigo-700 tracking-widest">NOVA</span>
+      {/* Footer structural penalty */}
+      <div className="flex flex-col md:flex-row gap-6">
+         <div className="flex-1 bg-purple-50/50 border border-purple-100 rounded-xl p-5 flex items-center gap-5">
+            <div className="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
+               <span className="text-[10px] font-bold text-purple-700 tracking-widest">NOVA</span>
             </div>
-            <div>
-               <h4 className="font-bold text-indigo-900 text-sm">Structural NOVA Penalty</h4>
-               <p className="text-xs text-indigo-700 mt-0.5">Applied to raw score based on processing level.</p>
+            <div className="flex-1">
+               <h4 className="font-bold text-purple-900 text-sm">Structural NOVA Penalty</h4>
+               <p className="text-xs text-purple-700/70 mt-1">Applied to raw score based on processing level.</p>
+            </div>
+            <div className="bg-white/60 px-4 py-2 rounded-lg border border-purple-50 flex flex-col items-center">
+               <span className="text-[10px] text-purple-500 font-medium mb-0.5">Processing Level</span>
+               <span className="font-bold text-purple-900 text-sm">{product.nova === 1 ? 'Unprocessed' : product.nova === 2 ? 'Culinary Ing.' : product.nova === 3 ? 'Processed' : 'Ultra Processed'}</span>
+            </div>
+            <div className="bg-purple-100/50 px-4 py-2 rounded-lg border border-purple-100 flex flex-col items-center">
+               <span className="text-[10px] text-purple-600 font-medium mb-0.5">Penalty Applied</span>
+               <span className="font-bold text-purple-900 text-sm">x{product.nova === 1 ? '1.0' : product.nova === 2 ? '0.9' : product.nova === 3 ? '0.7' : '0.5'}</span>
             </div>
          </div>
-         <div className="text-right">
-            <div className="font-bold text-indigo-900 text-lg">x{product.nova === 1 ? '1.0' : product.nova === 2 ? '0.9' : product.nova === 3 ? '0.7' : '0.5'}</div>
+
+         <div className="md:w-1/3 bg-gray-50/80 border border-gray-100 rounded-xl p-5 flex flex-col justify-center">
+            <h4 className="font-bold text-gray-900 text-sm mb-1.5">How it works</h4>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              The final score is the sum of all pillars after applying the NOVA structural penalty to reflect overall processing impact.
+            </p>
          </div>
       </div>
 

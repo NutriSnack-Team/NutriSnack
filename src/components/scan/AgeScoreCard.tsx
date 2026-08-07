@@ -5,52 +5,52 @@ interface AgeScoreCardProps {
   label: string;
   color: string;
   bg: string;
+  isSelected?: boolean;
+  onClick?: () => void;
 }
 
-export function AgeScoreCard({ ageGroup, ageRange, score, label, color }: AgeScoreCardProps) {
+export function AgeScoreCard({ ageGroup, ageRange, score, label, color, isSelected, onClick }: AgeScoreCardProps) {
   const getAvatarTheme = (group: string) => {
     switch (group.toLowerCase()) {
-      case 'child': return { img: 'child.png', cardBg: 'bg-yellow-50', cardBorder: 'border-yellow-200', titleColor: 'text-yellow-700' };
-      case 'teen': return { img: 'teen.png', cardBg: 'bg-pink-50', cardBorder: 'border-pink-200', titleColor: 'text-pink-700' };
-      case 'adult': return { img: 'adult.png', cardBg: 'bg-blue-50', cardBorder: 'border-blue-200', titleColor: 'text-blue-700' };
-      case 'elderly': return { img: 'elderly.png', cardBg: 'bg-green-50', cardBorder: 'border-green-200', titleColor: 'text-green-700' };
-      default: return { img: 'child.png', cardBg: 'bg-gray-50', cardBorder: 'border-gray-200', titleColor: 'text-gray-700' };
+      case 'child': return { img: 'child.png', cardBorder: 'border-yellow-400', titleColor: 'text-yellow-600', ring: 'ring-yellow-400', cardBg: 'bg-yellow-50' };
+      case 'teen': return { img: 'teen.png', cardBorder: 'border-pink-300', titleColor: 'text-pink-600', ring: 'ring-pink-300', cardBg: 'bg-pink-50' };
+      case 'adult': return { img: 'adult.png', cardBorder: 'border-blue-300', titleColor: 'text-blue-700', ring: 'ring-blue-300', cardBg: 'bg-blue-50' };
+      case 'elderly': return { img: 'elderly.png', cardBorder: 'border-green-300', titleColor: 'text-green-700', ring: 'ring-green-300', cardBg: 'bg-green-50' };
+      default: return { img: 'child.png', cardBorder: 'border-gray-300', titleColor: 'text-gray-700', ring: 'ring-gray-300', cardBg: 'bg-gray-50' };
     }
   };
 
   const theme = getAvatarTheme(ageGroup);
+  
+  // Convert text-red-600 to border-red-200 and text-red-600
+  const colorName = color.replace('text-', '').split('-')[0]; // e.g. red
+  const pillBorder = `border-${colorName}-200`;
 
   return (
-    <div className={`rounded-2xl border flex flex-col justify-between text-center ${theme.cardBg} ${theme.cardBorder} shadow-sm relative overflow-hidden min-h-[180px]`}>
-      
-      {/* Background image (completely visible) */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center pt-8 pb-12">
-        <img src={`/${theme.img}`} alt="" className="w-full h-full object-contain" />
-      </div>
+    <div 
+      onClick={onClick}
+      className={`bg-white rounded-2xl border-2 flex flex-col text-center p-3 shadow-sm relative overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md ${isSelected ? theme.ring + ' ring-2 ring-offset-2' : ''} ${theme.cardBorder} h-full`}
+    >
+      {/* Title */}
+      <h4 className={`font-bold text-xl mb-0.5 ${theme.titleColor}`}>{ageGroup}</h4>
+      <p className={`text-[11px] font-medium ${theme.titleColor} opacity-70 mb-1`}>{ageRange}</p>
 
-      {/* Layers for text readability */}
-      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/95 to-transparent z-0"></div>
-      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/95 to-transparent z-0"></div>
-
-      {/* Top Border Indicator */}
-      <div className={`absolute top-0 left-0 right-0 h-1 z-20 ${color.replace('text-', 'bg-')}`}></div>
-      
-      {/* Title (Top) */}
-      <div className="relative z-10 pt-4 px-4 flex flex-col items-center">
-        <h4 className={`font-semibold mb-0.5 ${theme.titleColor}`}>{ageGroup}</h4>
-        <p className={`text-[10px] font-medium ${theme.titleColor} opacity-80`}>{ageRange}</p>
-      </div>
-
-      <div className="flex-1"></div>
-
-      {/* Score (Bottom) */}
-      <div className="relative z-10 pb-4 px-4 flex flex-col items-center">
-        <div className={`w-14 h-14 rounded-full bg-white/95 backdrop-blur-sm shadow-sm flex items-center justify-center mb-2 border-2 ${theme.cardBorder}`}>
-          <span className={`text-2xl font-bold leading-none ${theme.titleColor}`}>{score}</span>
-        </div>
+      {/* Image Container */}
+      <div className="relative flex-1 w-[calc(100%+1.5rem)] -mx-3 mt-1 mb-8 flex items-center justify-center min-h-[140px]">
+        <img src={`/${theme.img}`} alt={ageGroup} className="absolute inset-0 w-full h-full object-cover mix-blend-multiply" />
         
-        <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${color} bg-white shadow-sm ring-1 ring-gray-100/50`}>
-          {label}
+        {/* Score Badge */}
+        <div className={`absolute -bottom-6 left-1/2 -translate-x-1/2 w-[72px] h-[72px] bg-white rounded-full flex flex-col items-center justify-center shadow-sm border-4 ${theme.cardBorder} z-10`}>
+          <span className={`text-3xl font-extrabold leading-none ${theme.titleColor}`}>{score}</span>
+        </div>
+      </div>
+
+      {/* Recommendation Pill */}
+      <div className={`mt-auto px-2 py-1.5 rounded-full border ${pillBorder} bg-white shadow-sm w-full z-20 flex flex-col items-center justify-center`}>
+        <span className={`text-[10px] sm:text-[11px] font-bold uppercase tracking-wide ${color} flex flex-col leading-tight`}>
+          {label.split(' ').map((word, i) => (
+            <span key={i}>{word}</span>
+          ))}
         </span>
       </div>
     </div>

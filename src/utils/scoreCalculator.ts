@@ -93,16 +93,16 @@ const categoryWeights: Record<string, Record<string, number>> = {
 const defaultCategoryWeights = categoryWeights["Biscuits"];
 
 export const getGradeAndColor = (score: number) => {
-  if (score >= 90) return { grade: 'A+', label: 'Excellent Choice', color: 'text-green-700', bg: 'bg-green-100' };
-  if (score >= 80) return { grade: 'A', label: 'Very Good Choice', color: 'text-green-600', bg: 'bg-green-50' };
-  if (score >= 70) return { grade: 'B+', label: 'Good Choice', color: 'text-teal-600', bg: 'bg-teal-50' };
-  if (score >= 60) return { grade: 'B', label: 'Healthy Choice', color: 'text-blue-600', bg: 'bg-blue-50' };
-  if (score >= 50) return { grade: 'C+', label: 'Acceptable in Moderation', color: 'text-yellow-600', bg: 'bg-yellow-50' };
-  if (score >= 40) return { grade: 'C', label: 'Moderate Consumption', color: 'text-orange-500', bg: 'bg-orange-50' };
-  if (score >= 30) return { grade: 'C-', label: 'Consume Occasionally', color: 'text-orange-600', bg: 'bg-orange-100' };
-  if (score >= 20) return { grade: 'D+', label: 'Limit Consumption', color: 'text-red-500', bg: 'bg-red-50' };
-  if (score >= 10) return { grade: 'D', label: 'Rarely Recommended', color: 'text-red-600', bg: 'bg-red-100' };
-  return { grade: 'E', label: 'Avoid Frequent Consumption', color: 'text-red-700', bg: 'bg-red-200' };
+  if (score >= 90) return { grade: 'A+', label: 'Excellent', color: 'text-green-700', bg: 'bg-green-100' };
+  if (score >= 80) return { grade: 'A', label: 'Very Good', color: 'text-green-600', bg: 'bg-green-50' };
+  if (score >= 70) return { grade: 'B+', label: 'Good ', color: 'text-teal-600', bg: 'bg-teal-50' };
+  if (score >= 60) return { grade: 'B', label: 'Healthy', color: 'text-blue-600', bg: 'bg-blue-50' };
+  if (score >= 50) return { grade: 'C+', label: 'Acceptable', color: 'text-yellow-600', bg: 'bg-yellow-50' };
+  if (score >= 40) return { grade: 'C', label: 'Moderate', color: 'text-orange-500', bg: 'bg-orange-50' };
+  if (score >= 30) return { grade: 'C-', label: 'Occasionally', color: 'text-orange-600', bg: 'bg-orange-100' };
+  if (score >= 20) return { grade: 'D+', label: 'Limit', color: 'text-red-500', bg: 'bg-red-50' };
+  if (score >= 10) return { grade: 'D', label: 'Rarely ', color: 'text-red-600', bg: 'bg-red-100' };
+  return { grade: 'E', label: 'Avoid ', color: 'text-red-700', bg: 'bg-red-200' };
 };
 
 // 4. Ingredient Families
@@ -129,8 +129,10 @@ const naturalDampeningWhitelist: Record<string, string[]> = {
 };
 
 // Helper: Calculate internal NGS
-const calculateInternalNGS = (product: any, overrideNova?: number): { scoreBreakdown: ScoreBreakdown, missingDataError: boolean } => {
+const calculateInternalNGS = (product: any, overrideNova?: number, overrideCategory?: string): { scoreBreakdown: ScoreBreakdown, missingDataError: boolean } => {
   const flags: string[] = [];
+  
+  const activeCategory = overrideCategory || product.category;
   
   // Section 8: Missing & Implausible Data Check
   let missingDataError = false;
@@ -152,12 +154,12 @@ const calculateInternalNGS = (product: any, overrideNova?: number): { scoreBreak
   }
 
   // Section 14: Amplified Exposure Category
-  if (['Milkshakes', 'Drinks', 'Ice Cream', 'Health Drinks'].includes(product.category)) {
+  if (['Milkshakes', 'Drinks', 'Ice Cream', 'Health Drinks'].includes(activeCategory)) {
     flags.push('amplified_exposure_category');
   }
 
   const getNutritionScore = (ageGroup: string) => {
-    const weights = categoryWeights[product.category] || defaultCategoryWeights;
+    const weights = categoryWeights[activeCategory] || defaultCategoryWeights;
     const refIntakes = referenceIntakes[ageGroup];
 
     let nut: Record<string, number> = {
@@ -223,7 +225,7 @@ const calculateInternalNGS = (product: any, overrideNova?: number): { scoreBreak
     // Section 2a: Natural-Nutrient Dampening
     let isDampened = false;
     let nova = overrideNova !== undefined ? overrideNova : (product.nova || 4);
-    if (nova <= 2 && naturalDampeningWhitelist[product.category] && naturalDampeningWhitelist[product.category].includes(worstNutrientKey)) {
+    if (nova <= 2 && naturalDampeningWhitelist[activeCategory] && naturalDampeningWhitelist[activeCategory].includes(worstNutrientKey)) {
       isDampened = true;
     }
     
@@ -313,7 +315,7 @@ const calculateInternalNGS = (product: any, overrideNova?: number): { scoreBreak
     if (firstIng.includes('water') || firstIng.includes('syrup') || firstIng.includes('concentrate')) {
       if (product.ingredients.some((i: string) => ['flavour', 'colour', 'sweetener', 'flavor', 'color'].some(k => i.toLowerCase().includes(k)))) isFormulatedBase = true;
     }
-    const isInstant = product.category === 'Muesli & Cereals' || product.isInstant;
+    const isInstant = activeCategory === 'Muesli & Cereals' || product.isInstant;
 
     if (isInstant) penalties += 10;
     if (isHighlyRefined) penalties += 10;
@@ -411,12 +413,13 @@ const calculateInternalNGS = (product: any, overrideNova?: number): { scoreBreak
     let N = nutResult.score;
     let A_age = getAdditiveScore(ageGroup);
     
+    let domNutrient = {
+      key: nutResult.worstKey,
+      dv: Math.round(nutResult.worstDV),
+      subScore: Math.round(nutResult.worstSubScore)
+    };
     if (ageGroup === 'adult') {
-      adultDominantNutrient = {
-        key: nutResult.worstKey,
-        dv: Math.round(nutResult.worstDV),
-        subScore: Math.round(nutResult.worstSubScore)
-      };
+      adultDominantNutrient = domNutrient;
     }
 
     // Section 1: Decoupled Structure
@@ -459,6 +462,7 @@ const calculateInternalNGS = (product: any, overrideNova?: number): { scoreBreak
       score: Math.max(0, Math.min(100, Math.round(NGS_final))), 
       components: { N: Math.round(N), I: Math.round(I), P: Math.round(P), A: Math.round(A_age) }, 
       serving_reality_check: servingRealityCheck,
+      dominantNutrient: domNutrient,
       ...getGradeAndColor(Math.round(NGS_final)) 
     };
     
@@ -503,19 +507,30 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
 
   // Section 1: Classification Sensitivity
   // If changing NOVA by 1 changes the grade, flag it.
+  let isClassificationSensitive = false;
   let currentNova = product.nova || 4;
+  
   if (currentNova > 1) {
     let alternateResult = calculateInternalNGS(product, currentNova - 1);
-    if (alternateResult.scoreBreakdown.grade !== breakdown.grade) {
-      if (!breakdown.flags) breakdown.flags = [];
-      breakdown.flags.push('classification_sensitive');
-    }
+    if (alternateResult.scoreBreakdown.grade !== breakdown.grade) isClassificationSensitive = true;
   } else if (currentNova === 1) {
     let alternateResult = calculateInternalNGS(product, 2);
-    if (alternateResult.scoreBreakdown.grade !== breakdown.grade) {
-      if (!breakdown.flags) breakdown.flags = [];
-      breakdown.flags.push('classification_sensitive');
+    if (alternateResult.scoreBreakdown.grade !== breakdown.grade) isClassificationSensitive = true;
+  }
+
+  // Also test Category Axis
+  const altCategory = product.second_most_likely_category;
+  
+  if (altCategory && altCategory !== product.category) {
+    let altCatResult = calculateInternalNGS(product, undefined, altCategory);
+    if (altCatResult.scoreBreakdown.grade !== breakdown.grade) {
+      isClassificationSensitive = true;
     }
+  }
+
+  if (isClassificationSensitive) {
+    if (!breakdown.flags) breakdown.flags = [];
+    breakdown.flags.push('classification_sensitive');
   }
 
   // Deduplicate flags
