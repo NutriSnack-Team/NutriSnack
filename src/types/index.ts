@@ -10,6 +10,8 @@ export interface AgeScore {
     P: number;
     A: number | null;
   };
+  scale: number;
+  cliffPenalty: number;
   serving_reality_check?: number;
   dominantNutrient?: {
     key: string;
@@ -44,6 +46,8 @@ export interface ScoreBreakdown {
 export interface AppState {
   isScanning: boolean;
   scanResultId: number | null;
+  dynamicProduct: any | null;
   setIsScanning: (status: boolean) => void;
   setScanResultId: (id: number | null) => void;
+  setDynamicProduct: (product: any | null) => void;
 }

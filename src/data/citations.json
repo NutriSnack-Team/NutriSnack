@@ -1,46 +1,46 @@
-{
-  "totalSugar": {
-    "child": "WHO Guideline (2015): 'We strongly recommend reducing free sugars intake to less than 10% of total energy intake, and suggest further reduction to below 5% (approx. 17g/day for pediatric needs) for additional health benefits. Exceeding this increases the risk of dental caries and unhealthy weight gain.'",
-    "teen": "ICMR-NIN Dietary Guidelines for Indians (2024): 'Adolescents should limit free sugars to minimize the risk of metabolic syndrome. The upper limit for adolescent energy requirements is approximately 32g/day of added sugar.'",
-    "adult": "WHO Guideline (2015): 'Adults should restrict free sugars to less than 10% of daily energy intake, optimally below 25g/day. High sugar intake is directly correlated with obesity and non-communicable diseases.'",
-    "elderly": "ICMR-NIN Dietary Guidelines for Indians (2024): 'For the elderly, reducing sugar intake is critical to managing blood glucose levels and preventing metabolic complications. Intake should be strictly monitored.'",
-    "default": "WHO Guideline (2015): 'Reducing free sugars to less than 10% of total energy intake reduces the risk of overweight, obesity, and tooth decay.'"
+[
+  {
+    "id": "who-sugar-2015-01",
+    "source": "WHO",
+    "title": "Guideline: Sugars intake for adults and children",
+    "year": 2015,
+    "section": "Recommendation 1",
+    "nutrients": ["totalSugar", "addedSugar"],
+    "ageGroups": ["all"],
+    "passage": "WHO recommends reducing free sugars intake to less than 10% of total daily energy intake, with additional benefit from further reduction to below 5%.",
+    "url": "https://www.who.int/publications/i/item/9789241549028"
   },
-  "addedSugar": {
-    "child": "WHO Guideline (2015): 'We strongly recommend reducing free sugars intake to less than 10% of total energy intake, and suggest further reduction to below 5% (approx. 17g/day for pediatric needs) for additional health benefits. Exceeding this increases the risk of dental caries and unhealthy weight gain.'",
-    "teen": "ICMR-NIN Dietary Guidelines for Indians (2024): 'Adolescents should limit free sugars to minimize the risk of metabolic syndrome. The upper limit for adolescent energy requirements is approximately 32g/day of added sugar.'",
-    "adult": "WHO Guideline (2015): 'Adults should restrict free sugars to less than 10% of daily energy intake, optimally below 25g/day. High sugar intake is directly correlated with obesity and non-communicable diseases.'",
-    "elderly": "ICMR-NIN Dietary Guidelines for Indians (2024): 'For the elderly, reducing sugar intake is critical to managing blood glucose levels and preventing metabolic complications. Intake should be strictly monitored.'",
-    "default": "WHO Guideline (2015): 'Reducing free sugars to less than 10% of total energy intake reduces the risk of overweight, obesity, and tooth decay.'"
+  {
+    "id": "icmr-nin-2020-sodium-child",
+    "source": "ICMR-NIN",
+    "title": "Nutrient Requirements for Indians — RDA and EAR",
+    "year": 2020,
+    "section": "Sodium, paediatric reference values",
+    "nutrients": ["sodium"],
+    "ageGroups": ["child"],
+    "passage": "Children have proportionally lower sodium tolerance than adults; excess intake in early childhood is associated with the development of salt preference and elevated blood pressure risk later in life.",
+    "url": null
   },
-  "sodium": {
-    "child": "WHO Guideline (2012): 'Children should consume less than 2g of sodium per day, adjusted downward based on their energy requirements relative to adults, to prevent hypertension later in life.'",
-    "teen": "WHO Guideline (2012): 'Adolescents should cap their sodium intake to less than 2g per day to maintain healthy blood pressure.'",
-    "adult": "WHO Guideline (2012): 'Adults should consume less than 2g of sodium (equivalent to 5g of salt) per day to reduce blood pressure and the risk of cardiovascular disease, stroke, and coronary heart attack.'",
-    "elderly": "ICMR-NIN Dietary Guidelines for Indians (2024): 'Elderly individuals are highly sensitive to sodium due to age-related renal changes and cardiovascular risk. Strict adherence to a low-sodium diet is advised.'",
-    "default": "WHO Guideline (2012): 'High sodium consumption and insufficient potassium intake contribute to high blood pressure, which increases the risk of heart disease and stroke.'"
+  {
+    "id": "who-sodium-2012-01",
+    "source": "WHO",
+    "title": "Guideline: Sodium intake for adults and children",
+    "year": 2012,
+    "section": "Recommendation 1",
+    "nutrients": ["sodium"],
+    "ageGroups": ["teen", "adult", "elderly"],
+    "passage": "WHO recommends a reduction in sodium intake to less than 2g/day (5g/day salt) in adults, to reduce blood pressure and risk of cardiovascular disease, stroke, and coronary heart disease.",
+    "url": "https://www.who.int/publications/i/item/9789241504836"
   },
-  "saturatedFat": {
-    "child": "WHO Draft Guideline: 'Children should limit saturated fat intake to less than 10% of total energy intake to establish healthy cardiovascular baselines early in life.'",
-    "teen": "ICMR-NIN Dietary Guidelines for Indians (2024): 'Adolescents must balance fat intake, avoiding excess saturated fats which contribute to dyslipidemia.'",
-    "adult": "WHO Draft Guideline: 'Adults should limit saturated fat to less than 10% of total energy intake to lower the risk of non-communicable diseases.'",
-    "elderly": "ICMR-NIN Dietary Guidelines for Indians (2024): 'Saturated fat intake in the elderly must be restricted to manage cholesterol levels and reduce the incidence of atherosclerosis.'",
-    "default": "WHO Draft Guideline: 'Reducing saturated fat intake to less than 10% of total energy intake reduces the risk of cardiovascular disease.'"
-  },
-  "transFat": {
-    "default": "WHO REPLACE Action Package (2018): 'Industrially produced trans fats should be strictly eliminated from the food supply. Trans fat intake increases the risk of heart disease by 21% and deaths by 28%. There is no safe level of consumption.'"
-  },
-  "calories": {
-    "default": "ICMR-NIN Dietary Guidelines for Indians (2024): 'Caloric intake must be balanced with physical activity. Excessive energy-dense packaged foods displace nutrient-rich foods and drive the rising prevalence of overweight and obesity.'"
-  },
-  "cholesterol": {
-    "default": "ICMR-NIN Dietary Guidelines for Indians (2024): 'Dietary cholesterol should be monitored, particularly for individuals with elevated cardiovascular risk profiles.'"
-  },
-  "caffeine": {
-    "child": "FSSAI Regulations / Pediatric Consensus: 'Caffeine is not recommended for young children due to its effects on the developing neurological and cardiovascular systems.'",
-    "teen": "Pediatric Consensus: 'Adolescent caffeine intake should be severely limited to avoid sleep disruption, anxiety, and heart palpitations.'",
-    "adult": "General Health Guidance: 'Adults can safely consume up to 400mg of caffeine daily, but intake should be monitored to avoid side effects.'",
-    "elderly": "General Health Guidance: 'Elderly individuals should halve caffeine intake to account for slower metabolic clearance and sensitivity to cardiovascular stimulation.'",
-    "default": "General Health Guidance: 'Excessive caffeine can lead to jitteriness, insomnia, and increased heart rate.'"
+  {
+    "id": "who-transfat-2018-01",
+    "source": "WHO",
+    "title": "REPLACE: Eliminating industrially-produced trans-fatty acids",
+    "year": 2018,
+    "section": "Health rationale",
+    "nutrients": ["transFat"],
+    "ageGroups": ["all"],
+    "passage": "Industrially produced trans fat intake is directly linked to increased risk of coronary heart disease; WHO recommends limiting trans fat to less than 1% of total energy intake.",
+    "url": null
   }
-}
+]

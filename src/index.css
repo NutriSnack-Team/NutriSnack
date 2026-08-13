@@ -120,3 +120,12 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Premium Aesthetics: Glassmorphism */
+.glass-panel {
+  @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)];
+}
+.glass-panel-dark {
+  @apply bg-slate-900/70 backdrop-blur-md border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.2)];
+}
+

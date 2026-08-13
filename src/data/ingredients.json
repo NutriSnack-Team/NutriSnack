@@ -1,4 +1,9 @@
 {
+  "Milk": {
+    "type": "Dairy",
+    "benefits": "Provides calcium, protein, and essential vitamins",
+    "risk": "Low"
+  },
   "Refined Wheat Flour": {
     "type": "Grain",
     "concerns": "Refined grain, stripped of most fiber and nutrients",

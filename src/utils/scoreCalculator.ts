@@ -1,4 +1,9 @@
 import type { ScoreBreakdown, AgeScore } from '@/types';
+import { getNutrient, getDeclaredNutrient, type NutrientKey } from './normalizeNutrient';
+
+const DANGER_CLIFF_CHILD_THRESHOLD = 150;
+const DANGER_CLIFF_ELDERLY_THRESHOLD = 100;
+const DANGER_CLIFF_PENALTY = 10;
 
 // 1. NOVA Structural Multiplier
 const novaScale: Record<number, number> = {
@@ -128,28 +133,65 @@ const naturalDampeningWhitelist: Record<string, string[]> = {
   "Seeds": ["saturatedFat"]
 };
 
+// 5. Deterministic NOVA Classifier
+export const estimateNovaGroup = (product: any): number => {
+  if (product.nova !== undefined) return product.nova;
+
+  const ingredients = product.ingredients ? product.ingredients.map((ing: string) => ing.toLowerCase().trim()) : [];
+  if (ingredients.length === 0) return 4; 
+
+  let hasAdditives = false;
+  let hasRefinedIngredients = false;
+  let hasCulinaryIngredients = false;
+
+  const culinaryKeywords = ['salt', 'sugar', 'oil', 'butter', 'vinegar', 'honey', 'syrup'];
+  const processedKeywords = ['flavour', 'flavor', 'color', 'colour', 'emulsifier', 'preservative', 'stabilizer', 'acidity regulator', 'sweetener', 'raising agent', 'antioxidant', 'maltodextrin', 'ins', 'e ', 'starch', 'extract'];
+
+  for (const ing of ingredients) {
+    if (processedKeywords.some(k => ing.includes(k))) hasAdditives = true;
+    if (familyAddedSugars.some(f => ing.includes(f))) hasRefinedIngredients = true;
+    if (familyRefinedOilsFats.some(f => ing.includes(f))) hasRefinedIngredients = true;
+    if (familyRefinedFlour.some(f => ing.includes(f))) hasRefinedIngredients = true;
+    if (culinaryKeywords.some(k => ing.includes(k))) hasCulinaryIngredients = true;
+  }
+
+  if (product.additives && product.additives.length > 0) hasAdditives = true;
+
+  if (hasAdditives || (hasRefinedIngredients && ingredients.length > 5)) return 4;
+  if (hasRefinedIngredients || (hasCulinaryIngredients && ingredients.length > 2)) return 3;
+  if (ingredients.length === 1 && hasCulinaryIngredients) return 2;
+  return 1;
+};
+
+// 6. Nutrient Normalization Helper
+// This function was moved to normalizeNutrient.ts
+
 // Helper: Calculate internal NGS
-const calculateInternalNGS = (product: any, overrideNova?: number, overrideCategory?: string): { scoreBreakdown: ScoreBreakdown, missingDataError: boolean } => {
+export const calculateInternalNGS = (product: any, overrideNova?: number, overrideCategory?: string): { scoreBreakdown: ScoreBreakdown, missingDataError: boolean } => {
   const flags: string[] = [];
   
   const activeCategory = overrideCategory || product.category;
   
-  // Section 8: Missing & Implausible Data Check
+  // Section 8 & 14: Missing & Implausible Data Check
   let missingDataError = false;
-  if (!product.nutrition ||
-      product.nutrition.calories === undefined ||
-      product.nutrition.protein === undefined ||
-      (product.nutrition.totalSugars === undefined && product.nutrition.sugar === undefined) ||
-      (product.nutrition.totalFat === undefined && product.nutrition.fat === undefined) ||
-      product.nutrition.saturatedFat === undefined ||
-      product.nutrition.transFat === undefined ||
-      product.nutrition.sodium === undefined) {
+  
+  let novaForMissingCheck = overrideNova !== undefined ? overrideNova : estimateNovaGroup(product);
+  if (novaForMissingCheck > 1 && (!product.ingredients || product.ingredients.length === 0)) {
+    flags.push('ingredients_undeclared');
+    missingDataError = true;
+  } else if (!product.nutrition ||
+      getDeclaredNutrient(product.nutrition, 'calories') === undefined ||
+      getDeclaredNutrient(product.nutrition, 'protein') === undefined ||
+      getDeclaredNutrient(product.nutrition, 'totalSugar') === undefined ||
+      getDeclaredNutrient(product.nutrition, 'saturatedFat') === undefined ||
+      getDeclaredNutrient(product.nutrition, 'transFat') === undefined ||
+      getDeclaredNutrient(product.nutrition, 'sodium') === undefined) {
     flags.push('mandatory_nutrient_undeclared');
     missingDataError = true;
   }
   
   // Section 12: Allergen Flag
-  if (product.allergens === undefined || product.allergens.length === 0) {
+  if (!product.allergens || product.allergens.length === 0) {
     flags.push('allergen_undeclared');
   }
 
@@ -162,18 +204,13 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
     const weights = categoryWeights[activeCategory] || defaultCategoryWeights;
     const refIntakes = referenceIntakes[ageGroup];
 
-    let nut: Record<string, number> = {
-      calories: product.nutrition?.calories || 0,
-      protein: product.nutrition?.protein || 0,
-      fiber: product.nutrition?.fiber || 0,
-      totalSugar: product.nutrition?.totalSugars || product.nutrition?.sugar || 0,
-      addedSugar: product.nutrition?.addedSugars || product.nutrition?.addedSugar || 0,
-      sodium: product.nutrition?.sodium || 0,
-      saturatedFat: product.nutrition?.saturatedFat || 0,
-      transFat: product.nutrition?.transFat || 0,
-      cholesterol: product.nutrition?.cholesterol || 0,
-      caffeine: product.nutrition?.caffeine || 0,
-    };
+    const NUTRIENT_KEYS: NutrientKey[] = [
+      'calories', 'protein', 'fiber', 'totalSugar', 'addedSugar',
+      'sodium', 'saturatedFat', 'transFat', 'cholesterol', 'caffeine',
+    ];
+    let nut: Record<string, number> = Object.fromEntries(
+      NUTRIENT_KEYS.map(k => [k, getNutrient(product.nutrition, k)])
+    );
 
     let p: Record<string, number> = {};
     for (const key in refIntakes) {
@@ -189,10 +226,13 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
     for (const key of negativeKeys) {
       let w = weights[key];
       if (w > 0) {
+        if ((key === 'cholesterol' || key === 'caffeine') && getDeclaredNutrient(product.nutrition, key as NutrientKey) === undefined) {
+          continue;
+        }
         totalWNeg += w;
         let s_i = 100 * Math.exp(-kValues[key] * p[key]);
         if ((key === 'calories' || key === 'totalSugar' || key === 'sodium' || key === 'saturatedFat' || key === 'transFat') && 
-            (product.nutrition && product.nutrition[key] === undefined && product.nutrition[key === 'totalSugar' ? 'sugar' : key] === undefined)) {
+            getDeclaredNutrient(product.nutrition, key as NutrientKey) === undefined) {
           s_i = 0; 
         }
         let safe_s_i = Math.max(s_i, 1e-10);
@@ -212,6 +252,9 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
     for (const key of positiveKeys) {
       let w = weights[key];
       if (w > 0) {
+        if (key === 'fiber' && product.nutrition && product.nutrition[key] === undefined) {
+          continue;
+        }
         totalWPos += w;
         let p_eff = Math.min(p[key], 100); 
         let s_i = 100 * (1 - Math.exp(-kp * p_eff));
@@ -220,11 +263,12 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
     }
     let N_pos = totalWPos > 0 ? N_pos_sum / totalWPos : 0;
 
-    let N_weighted_average = N_neg * (totalWNeg / 100) + N_pos * (totalWPos / 100);
+    let totalActiveWeight = totalWNeg + totalWPos;
+    let N_weighted_average = totalActiveWeight > 0 ? (N_neg * (totalWNeg / totalActiveWeight) + N_pos * (totalWPos / totalActiveWeight)) : 0;
     
     // Section 2a: Natural-Nutrient Dampening
     let isDampened = false;
-    let nova = overrideNova !== undefined ? overrideNova : (product.nova || 4);
+    let nova = overrideNova !== undefined ? overrideNova : estimateNovaGroup(product);
     if (nova <= 2 && naturalDampeningWhitelist[activeCategory] && naturalDampeningWhitelist[activeCategory].includes(worstNutrientKey)) {
       isDampened = true;
     }
@@ -243,7 +287,7 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
   };
 
   const getIngredientScore = () => {
-    let nova = overrideNova !== undefined ? overrideNova : (product.nova || 4);
+    let nova = overrideNova !== undefined ? overrideNova : estimateNovaGroup(product);
     if (nova === 1) return 100;
     if (!product.ingredients || product.ingredients.length === 0) return 0;
     let i_score = 50;
@@ -283,13 +327,7 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
     let positionPenaltyTotal = 0;
     for (let family of Array.from(familiesFound)) {
       let pos = familyPositions[family];
-      if (family === 'addedSugars') {
-         positionPenaltyTotal += (pos === 1 ? 15 : pos === 2 ? 10 : pos === 3 ? 5 : 0);
-      } else if (family === 'refinedOilsFats') {
-         positionPenaltyTotal += (pos === 1 ? 12 : pos === 2 ? 8 : pos === 3 ? 4 : 0);
-      } else if (family === 'refinedFlour') {
-         positionPenaltyTotal += (pos === 1 ? 10 : pos === 2 ? 6 : pos === 3 ? 3 : 0);
-      }
+      positionPenaltyTotal += (pos === 1 ? 10 : pos === 2 ? 8 : pos === 3 ? 6 : pos === 4 ? 4 : pos === 5 ? 2 : 0);
     }
 
     i_score = 50 + positiveContribution - (4 * genericProcessedCount) - positionPenaltyTotal;
@@ -305,7 +343,7 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
   };
 
   const getProcessingScore = () => {
-    let nova = overrideNova !== undefined ? overrideNova : (product.nova || 4);
+    let nova = overrideNova !== undefined ? overrideNova : estimateNovaGroup(product);
     if (nova === 1) return 100;
     
     let penalties = 0;
@@ -402,7 +440,7 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
 
   let I = getIngredientScore();
   let P = getProcessingScore();
-  let nova = overrideNova !== undefined ? overrideNova : (product.nova || 4);
+  let nova = overrideNova !== undefined ? overrideNova : estimateNovaGroup(product);
   let scale = novaScale[nova] || 0.50;
 
   // Track the adult dominant nutrient for the root response
@@ -422,6 +460,22 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
       adultDominantNutrient = domNutrient;
     }
 
+    // Section 16: Exclude Infant Products
+    if (ageGroup === 'child' && (product.category === 'Infant Formula' || product.isInfantProduct)) {
+      return {
+        score: 0,
+        components: { N: 0, I: 0, P: 0, A: 0 },
+        scale: scale,
+        cliffPenalty: 0,
+        serving_reality_check: undefined,
+        dominantNutrient: undefined,
+        grade: 'N/A',
+        label: 'Excluded (Infant Product)',
+        color: 'text-gray-500',
+        bg: 'bg-gray-100'
+      };
+    }
+
     // Section 1: Decoupled Structure
     let N_capped = nova === 4 ? Math.min(N, 50) : N;
     let NGS_pre_cliff = scale * (0.20 * I + 0.15 * P + 0.30 * A_age) + 0.35 * N_capped;
@@ -430,13 +484,13 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
     let cliffPenalty = 0;
     let pMap = nutResult.pMap;
     if (ageGroup === 'child') {
-      if (pMap.totalSugar >= 150 || pMap.addedSugar >= 150 || pMap.sodium >= 150 || 
-          pMap.saturatedFat >= 150 || pMap.transFat >= 150 || pMap.caffeine >= 150) {
-        cliffPenalty = 10;
+      if (pMap.totalSugar >= DANGER_CLIFF_CHILD_THRESHOLD || pMap.addedSugar >= DANGER_CLIFF_CHILD_THRESHOLD || pMap.sodium >= DANGER_CLIFF_CHILD_THRESHOLD || 
+          pMap.saturatedFat >= DANGER_CLIFF_CHILD_THRESHOLD || pMap.transFat >= DANGER_CLIFF_CHILD_THRESHOLD || pMap.caffeine >= DANGER_CLIFF_CHILD_THRESHOLD) {
+        cliffPenalty = DANGER_CLIFF_PENALTY;
       }
     } else if (ageGroup === 'elderly') {
-      if (pMap.sodium >= 100 || pMap.caffeine >= 100) {
-        cliffPenalty = 10;
+      if (pMap.sodium >= DANGER_CLIFF_ELDERLY_THRESHOLD || pMap.caffeine >= DANGER_CLIFF_ELDERLY_THRESHOLD) {
+        cliffPenalty = DANGER_CLIFF_PENALTY;
       }
     }
 
@@ -444,13 +498,12 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
     
     // Section 14: Serving Reality Check
     let servingRealityCheck: number | undefined;
-    if (product.serving_size) {
-      let servingVal = parseFloat(product.serving_size);
+    if (product.serve_size || product.serving_size) {
+      let servingVal = parseFloat(product.serve_size || product.serving_size);
       if (!isNaN(servingVal)) {
          let worstNut = nutResult.worstKey;
          let ref = referenceIntakes[ageGroup][worstNut];
-         let valPer100 = product.nutrition && product.nutrition[worstNut] !== undefined ? product.nutrition[worstNut] : 
-                        (worstNut === 'totalSugar' ? product.nutrition?.sugar || 0 : (worstNut === 'addedSugar' ? product.nutrition?.addedSugar || 0 : 0));
+         let valPer100 = getNutrient(product.nutrition, worstNut as NutrientKey);
          let valPerServing = (valPer100 / 100) * servingVal;
          servingRealityCheck = Math.round((valPerServing / ref) * 100);
       }
@@ -461,6 +514,8 @@ const calculateInternalNGS = (product: any, overrideNova?: number, overrideCateg
     let res = { 
       score: Math.max(0, Math.min(100, Math.round(NGS_final))), 
       components: { N: Math.round(N), I: Math.round(I), P: Math.round(P), A: Math.round(A_age) }, 
+      scale: scale,
+      cliffPenalty: cliffPenalty,
       serving_reality_check: servingRealityCheck,
       dominantNutrient: domNutrient,
       ...getGradeAndColor(Math.round(NGS_final)) 
@@ -497,41 +552,7 @@ export const calculateNutriGuardScore = (product: any): ScoreBreakdown => {
   // If missing data, return immediately
   if (missing) return breakdown;
 
-  // Section 9: Grading Displayed Precision (boundary_sensitive)
-  // Check if score % 10 is within 3 points of a boundary (e.g. 17, 18, 19, 20, 21, 22)
-  let rem = breakdown.overall % 10;
-  if (rem >= 7 || rem <= 2) {
-    if (!breakdown.flags) breakdown.flags = [];
-    breakdown.flags.push('boundary_sensitive');
-  }
 
-  // Section 1: Classification Sensitivity
-  // If changing NOVA by 1 changes the grade, flag it.
-  let isClassificationSensitive = false;
-  let currentNova = product.nova || 4;
-  
-  if (currentNova > 1) {
-    let alternateResult = calculateInternalNGS(product, currentNova - 1);
-    if (alternateResult.scoreBreakdown.grade !== breakdown.grade) isClassificationSensitive = true;
-  } else if (currentNova === 1) {
-    let alternateResult = calculateInternalNGS(product, 2);
-    if (alternateResult.scoreBreakdown.grade !== breakdown.grade) isClassificationSensitive = true;
-  }
-
-  // Also test Category Axis
-  const altCategory = product.second_most_likely_category;
-  
-  if (altCategory && altCategory !== product.category) {
-    let altCatResult = calculateInternalNGS(product, undefined, altCategory);
-    if (altCatResult.scoreBreakdown.grade !== breakdown.grade) {
-      isClassificationSensitive = true;
-    }
-  }
-
-  if (isClassificationSensitive) {
-    if (!breakdown.flags) breakdown.flags = [];
-    breakdown.flags.push('classification_sensitive');
-  }
 
   // Deduplicate flags
   if (breakdown.flags) {
