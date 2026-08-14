@@ -153,7 +153,11 @@ export async function generateRagExplanation(nutrientKey: NutrientKey, ageGroup:
       paraphrase them for a general audience.
     `;
 
-    const result = await model.generateContent(prompt);
+    const result = await Promise.race([
+      model.generateContent(prompt),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Gemini API timeout")), 5000))
+    ]);
+
     const explanation: RagExplanation = {
       text: result.response.text().trim(),
       citations,
@@ -162,7 +166,7 @@ export async function generateRagExplanation(nutrientKey: NutrientKey, ageGroup:
     explanationCache[cacheKey] = explanation;
     return explanation;
   } catch (error) {
-    console.error("RAG generation failed:", error);
-    return { text: "An error occurred while fetching the explanation.", citations: [], grounded: false };
+    console.error("RAG generation failed or timed out:", error);
+    return { text: "General health recommendation: Balance macro and micro nutrient intake.", citations: [], grounded: false };
   }
 }
